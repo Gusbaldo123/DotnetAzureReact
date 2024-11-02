@@ -1,0 +1,46 @@
+.navHeader{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #1E1E1E;
+}
+
+.navHeader .navHeaderIcon{
+  width: 50%;
+  margin: 1% 0 1% 5%;
+}
+.navHeader .navHeaderIcon *{
+  border-radius: 8px;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border: 0;
+}
+.navHeader .navHeaderIcon *:hover{
+  background-color: white;
+}
+.navHeader .navHeaderButtons{
+  width: 50%;
+  margin: 1% 5% 1% 0;
+  display: flex;
+  justify-content: right;
+}
+.navHeader .navHeaderButtons .btSignIn{
+  background-color: #303030;
+}
+.navHeader .navHeaderButtons .btSignUp{
+  color: #303030;
+}
+.navHeader .navHeaderButtons button{
+  margin: 5px;
+  padding: 2px 1em 2px 1em;
+  border: 1px solid white;
+  border-radius: .5em;
+  color: white;
+}
+.navHeader .navHeaderButtons button:hover{
+  transition: .4s;
+  background-color: #02542D;
+  color: white;
+  border: 1px solid #0B2A1C;
+}

@@ -1,0 +1,53 @@
+.siteFooter{
+  margin: 5%;
+  background-color: #1E1E1E;
+  justify-content: space-between;
+}
+
+.siteFooter hr{
+  border: 0;
+  height: 1px;
+  background: #333;
+}
+
+.footerInformations{
+  display: flex;
+}
+.footerInformations .footerSocialMedia{
+  margin: 2%;
+  width: 20%;
+}
+.footerInformations .footerSocialMedia .footerSocialMediaLogo button{
+  border-radius: 8px;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border: 0 solid transparent;
+}
+.footerInformations .footerSocialMedia .footerSocialMediaLogo button:hover{
+  background-color: white;
+}
+
+.footerInformations .footerSocialMedia .footerSocialMediaButtons{
+  display: inline-block;
+  margin-top:15px;
+}
+.footerInformations .footerSocialMedia .footerSocialMediaButtons button{
+  margin-right: 5px;
+  border-radius: 6px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  border: 0;
+}
+.footerInformations .footerContact{
+  color: white;
+  width: 20%;
+}
+.footerInformations .footerContact h4{
+  height: 32px;
+  margin: 0;
+}
+.footerInformations .footerContact p{
+  margin-top: 25px;
+}

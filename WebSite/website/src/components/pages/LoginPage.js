@@ -2,11 +2,19 @@ import React from "react";
 
 import "./LoginPage.css";
 
+import Header from "../Header";
+import Banner from "../Banner";
+import Footer from "../Footer";
+
 function LoginPage()
 {
   return(
     <>
-    <h1>LoginPage</h1>
+      <Header/>
+      <main>
+        <Banner/>
+      </main>
+      <Footer/> 
     </>
   );
 }

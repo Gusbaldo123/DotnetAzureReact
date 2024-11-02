@@ -2,11 +2,19 @@ import React from "react";
 
 import "./StudentPage.css";
 
+import Header from "../Header";
+import Banner from "../Banner";
+import Footer from "../Footer";
+
 function StudentPage()
 {
   return(
     <>
-    <h1>StudentPage</h1>
+      <Header/>
+      <main>
+        <Banner/>
+      </main>
+      <Footer/> 
     </>
   );
 }

@@ -2,11 +2,19 @@ import React from "react";
 
 import "./ProfessorPage.css";
 
+import Header from "../Header";
+import Banner from "../Banner";
+import Footer from "../Footer";
+
 function ProfessorPage()
 {
   return(
     <>
-    <h1>ProfessorPage</h1>
+      <Header/>
+      <main>
+        <Banner/>
+      </main>
+      <Footer/> 
     </>
   );
 }
