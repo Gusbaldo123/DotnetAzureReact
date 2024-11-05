@@ -3,8 +3,8 @@ import React from "react";
 import "./ProfessorPage.css";
 
 import Header from "../../components/layout/Header";
-import Banner from "../../components/shared/Banner";
 import Footer from "../../components/layout/Footer";
+import Banner from "../../components/shared/Banner";
 
 function ProfessorPage()
 {

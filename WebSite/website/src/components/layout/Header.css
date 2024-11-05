@@ -6,19 +6,30 @@
 }
 
 .navHeader .navHeaderIcon{
+  border-radius: 25%;
   width: 50%;
   margin: 1% 0 1% 5%;
 }
-.navHeader .navHeaderIcon *{
+.navHeader .navHeaderIcon .iconHeader{
   display: block;
-  border-radius: 8px;
+  border: 2px solid transparent;
+  border-radius: 50%;
   padding: 0;
   width: 32px;
   height: 32px;
-  border: 0;
 }
-.navHeader .navHeaderIcon *:hover{
+.navHeader .navHeaderIcon .iconHeader img{
+  display: block;
+  border-radius: 50%;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.navHeader .navHeaderIcon .iconHeader:hover{
+  transition: .2s;
   background-color: white;
+  border: 2px solid white;
 }
 .navHeader .navHeaderButtons{
   width: 50%;

@@ -17,15 +17,28 @@
   margin: 2%;
   width: 20%;
 }
-.footerInformations .footerSocialMedia .footerSocialMediaLogo button{
-  border-radius: 8px;
+.footerInformations .footerSocialMedia .footerSocialMediaLogo{
+  width: 100%;
+}
+
+.footerInformations .footerSocialMedia .footerSocialMediaLogo a{
+  display: inline-block;
+  border-radius: 50%;
   padding: 0;
+  border: 2px solid transparent;
   width: 32px;
   height: 32px;
-  border: 0 solid transparent;
+  background-color: transparent;
 }
-.footerInformations .footerSocialMedia .footerSocialMediaLogo button:hover{
-  background-color: white;
+.footerInformations .footerSocialMedia .footerSocialMediaLogo a:hover{
+  border: 2px solid white;
+}
+.footerInformations .footerSocialMedia .footerSocialMediaLogo  img{
+  padding: 0;
+  border: 0;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
 }
 
 .footerInformations .footerSocialMedia .footerSocialMediaButtons{
