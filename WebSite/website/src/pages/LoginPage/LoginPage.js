@@ -2,9 +2,9 @@ import React from "react";
 
 import "./LoginPage.css";
 
-import Header from "../Header";
-import Banner from "../Banner";
-import Footer from "../Footer";
+import Header from "../../components/Header";
+import Banner from "../../components/Banner";
+import Footer from "../../components/Footer";
 
 
 

@@ -2,11 +2,11 @@ import React from "react";
 
 import {BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import LoginPage from "./components/pages/LoginPage";
-import CoursePage from "./components/pages/CoursePage";
-import StudentPage from "./components/pages/StudentPage";
-import ProfessorPage from "./components/pages/ProfessorPage";
-import HomePage from "./components/pages/HomePage";
+import LoginPage from "./Pages/LoginPage/LoginPage";
+import CoursePage from "./Pages/CoursePage/CoursePage";
+import StudentPage from "./Pages/StudentPage/StudentPage";
+import ProfessorPage from "./Pages/ProfessorPage/ProfessorPage";
+import HomePage from "./Pages/HomePage/HomePage";
 
 function AppRoutes()
 {

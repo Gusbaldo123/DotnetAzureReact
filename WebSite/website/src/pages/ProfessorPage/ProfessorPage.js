@@ -2,9 +2,9 @@ import React from "react";
 
 import "./ProfessorPage.css";
 
-import Header from "../Header";
-import Banner from "../Banner";
-import Footer from "../Footer";
+import Header from "../../components/layout/Header";
+import Banner from "../../components/shared/Banner";
+import Footer from "../../components/layout/Footer";
 
 function ProfessorPage()
 {
