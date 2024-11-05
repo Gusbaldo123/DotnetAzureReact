@@ -1,6 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import "./Header.css";
+
+function MenuClick()
+{
+  <Link  to={{pathname: '/home'}}>NavigateNow</Link>
+}
 
 function Header()
 {
@@ -8,11 +14,11 @@ function Header()
     <header className="siteHeader">
         <nav className="navHeader">
           <div className="navHeaderIcon">
-            <button className="iconHeader"><img src="" alt="" /></button>
+            <Link className="iconHeader" to={{pathname: '/home'}}><img src="" alt="" /></Link>
           </div>
           <div className="navHeaderButtons">
-            <button className="btSignIn">Sign In</button>
-            <button className="btSignUp">Sign Up</button>
+            <Link className="btSignIn" to={{pathname: '/login'}}>Sign In</Link>
+            <Link className="btSignUp" to={{pathname: '/login'}}>Sign Up</Link>
           </div>
         </nav>
       </header>

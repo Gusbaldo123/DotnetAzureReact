@@ -11,9 +11,9 @@ function ProfessorPage()
   return(
     <>
       <Header/>
-      <main>
-        <Banner/>
-      </main>
+        <main>
+          <Banner/>
+        </main>
       <Footer/> 
     </>
   );

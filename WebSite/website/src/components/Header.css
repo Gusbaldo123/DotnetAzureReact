@@ -10,6 +10,7 @@
   margin: 1% 0 1% 5%;
 }
 .navHeader .navHeaderIcon *{
+  display: block;
   border-radius: 8px;
   padding: 0;
   width: 32px;
@@ -26,19 +27,20 @@
   justify-content: right;
 }
 .navHeader .navHeaderButtons .btSignIn{
+  color: white;
   background-color: #303030;
 }
 .navHeader .navHeaderButtons .btSignUp{
+  background-color: white;
   color: #303030;
 }
-.navHeader .navHeaderButtons button{
+.navHeader .navHeaderButtons a{
   margin: 5px;
   padding: 2px 1em 2px 1em;
   border: 1px solid white;
   border-radius: .5em;
-  color: white;
 }
-.navHeader .navHeaderButtons button:hover{
+.navHeader .navHeaderButtons a:hover{
   transition: .4s;
   background-color: #02542D;
   color: white;

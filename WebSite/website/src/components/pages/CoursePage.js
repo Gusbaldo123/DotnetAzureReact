@@ -11,9 +11,9 @@ function CoursePage()
   return(
     <>
       <Header/>
-      <main>
-        <Banner/>
-      </main>
+        <main>
+          <Banner/>
+        </main>
       <Footer/> 
     </>
   );
