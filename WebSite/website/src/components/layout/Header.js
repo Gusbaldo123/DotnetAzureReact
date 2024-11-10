@@ -13,8 +13,8 @@ function Header()
             <Link className="iconHeader" to={{pathname: '/home'}}><img src={iconWebsite} alt="iconWebsite" /></Link>
           </div>
           <div className="navHeaderButtons">
-            <Link className="btSignIn" to={{pathname: '/login'}}>Sign In</Link>
-            <Link className="btSignUp" to={{pathname: '/login'}}>Sign Up</Link>
+            <Link className="btSignIn" to={{ pathname: "/login", search: "?form=signIn" }}>Sign In</Link>
+            <Link className="btSignUp" to={{ pathname: "/login", search: "?form=signUp" }}>Sign Up</Link>
           </div>
         </nav>
       </header>
