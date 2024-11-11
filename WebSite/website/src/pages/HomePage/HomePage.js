@@ -1,32 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./HomePage.css";
 
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
-const infoPlaceHolder = [
-  {
-    Title: "Become a Professional Swimmer",
-    Img: require("../../assets/ProSwimmer.png"),
-  },
-  {
-    Title: "How to reach the moon",
-    Img: require("../../assets/ReachMoon.png"),
-  },
-  {
-    Title: "Learn to Code",
-    Img: require("../../assets/LearnCode.png"),
-  },
-  {
-    Title: "Mastering Photography",
-    Img: require("../../assets/Photography.png"),
-  },
-];
+
+const infoPlaceHolder = require("../../TemporaryInfo.js").CourseInfo();
+
 
 function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsToShow = 2;
+  const navigate = useNavigate();
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) =>
@@ -39,6 +27,10 @@ function HomePage() {
       (prevIndex - 1 + infoPlaceHolder.length) % infoPlaceHolder.length
     );
   };
+  const courseClick = (id) => {
+    console.log(id);
+    navigate(`/course?courseID=${id}`);
+  };  
 
   const visibleItems = [
     infoPlaceHolder[currentIndex],
@@ -68,13 +60,13 @@ function HomePage() {
               </svg>
             </button>
             <div className="carouselWrapper">
-              {visibleItems.map((course, i) => (
-                <div key={i} className="course fade">
-                  <img src={course.Img} alt={`course${i}`} />
-                  <div className="courseName">{course.Title}</div>
-                </div>
-              ))}
-            </div>
+            {visibleItems.map((course, i) => (
+              <div key={i} className="course fade"  onClick={() => courseClick(course.id)}>
+                <img src={course.Img} alt={`course${i}`}/>
+                <div className="courseName">{course.Title}</div>
+              </div>
+            ))}
+          </div>
             <button onClick={handleNext} className="contentCourseNext btCourses">
               <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
                 <path d="M8 4l8 8-8 8" />
