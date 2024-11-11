@@ -11,7 +11,7 @@
     justify-content: center;
     display:block;
 }
-.formLogin a{
+.formLogin a, .formSignUp a{
     color: white;
     width: 80%;
     margin: 5% auto;
@@ -21,10 +21,10 @@
 .formLogin h2,.formSignUp h2{
     width: 100%;
     text-align: center;
-    font-size: 2.2em;
+    font-size: 3em;
     color:white;
 }
-.formLogin h2,.formSignUp h3{
+.formSignUp h3{
     width: 100%;
     text-align: center;
     font-size: 1.5em;

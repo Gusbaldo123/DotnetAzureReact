@@ -12,12 +12,12 @@ function LogInForm()
 {
   return(
     <>
-    <form action="Get" className="formLogin">
+    <form action="post" className="formLogin">
       <h2>Log In</h2>
       <div><label htmlFor="lblEmail">Email</label>
-      <input type="text" name="lblEmail" id="lblEmail" className="lblEmail"/></div>
+      <input type="text" name="lblEmail" id="lblEmail" className="lblEmail" required/></div>
       <div><label htmlFor="lblPass">Password</label>
-      <input type="password" name="lblPass" id="lblPass" className="lblPass"/></div>
+      <input type="password" name="lblPass" id="lblPass" className="lblPass" required/></div>
     <button type="submit">LogIn</button>
     <a href="">Forgot your password?</a>
     <Link className="btSignUp" to={{ pathname: "/login", search: "?form=signUp" }}>Don't have a account?</Link>
@@ -28,7 +28,7 @@ function SignUpForm()
 {
   return(
     <>
-    <form action="Post" className="formSignUp">
+    <form action="post" className="formSignUp">
       <h2>SignUp</h2>
       <div>
         <label htmlFor="lblEmail">Email</label>
@@ -60,7 +60,7 @@ function SignUpForm()
 
 function LoginPage()
 {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   let isLoginPage = searchParams.get("form") === "signIn";
   return(
     <>
