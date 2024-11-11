@@ -19,7 +19,7 @@ function LogInForm()
       <div><label htmlFor="lblPass">Password</label>
       <input type="password" name="lblPass" id="lblPass" className="lblPass" required/></div>
     <button type="submit">LogIn</button>
-    <a href="">Forgot your password?</a>
+    <Link className="btForgot" to={{pathname: "/Recover"}}>Forgot your password?</Link>
     <Link className="btSignUp" to={{ pathname: "/login", search: "?form=signUp" }}>Don't have a account?</Link>
     </form></>
   );
