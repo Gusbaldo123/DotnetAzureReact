@@ -30,5 +30,25 @@ module.exports= {
         videoList:["https://www.youtube.com/watch?v=xvFZjo5PgG0","https://www.youtube.com/watch?v=xvFZjo5PgG0","https://www.youtube.com/watch?v=xvFZjo5PgG0"]
       },
     ]
+  },
+  UserInfo:function(){
+    return [
+      {
+        "Id":0,
+        "Email":"admin@skillhub.com",
+        "Password":"123",
+        "Firstname":"Admin",
+        "Surname":"SkillHub",
+        "Phone":"+000 000 000 000"
+      },
+      {
+        "Id":1,
+        "Email":"Test@skillhub.com",
+        "Password":"123",
+        "Firstname":"Test",
+        "Surname":"SkillHub",
+        "Phone":"+000 000 000 000"
+      }
+    ]
   }
 }
