@@ -28,7 +28,6 @@ function HomePage() {
     );
   };
   const courseClick = (id) => {
-    console.log(id);
     navigate(`/course?courseID=${id}`);
   };  
 

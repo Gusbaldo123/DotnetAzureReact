@@ -34,11 +34,20 @@
     overflow:scroll;
     overflow-x:hidden;
 }
+.courseContent .videoGroup{
+    display: flex;
+    width: 100%;
+}
+.courseContent .videoGroup .videoCheckbox{
+    margin: auto;
+    transform: scale(1.5);
+}
 .courseContent .courseVideo{
     background-color: #02542D;
     border-radius: .2em;
     padding: 2px;
     margin: 5px 0;
+    width: 95%;
 }
 .courseContent .courseVideo:hover{
     background-color: #043d22;

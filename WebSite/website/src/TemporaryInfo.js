@@ -39,7 +39,21 @@ module.exports= {
         "Password":"123",
         "Firstname":"Admin",
         "Surname":"SkillHub",
-        "Phone":"+000 000 000 000"
+        "Phone":"+000 000 000 000",
+        "CourseList":[
+          {
+            "id":0,
+            "videoList":[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]
+          },
+          {
+            "id":1,
+            "videoList":[true,true,true]
+          },
+          {
+            "id":2,
+            "videoList":[true,true,false]
+          }
+        ]
       },
       {
         "Id":1,
@@ -47,7 +61,8 @@ module.exports= {
         "Password":"123",
         "Firstname":"Test",
         "Surname":"SkillHub",
-        "Phone":"+000 000 000 000"
+        "Phone":"+000 000 000 000",
+        "CourseList":[]
       }
     ]
   }

@@ -94,7 +94,8 @@ function SubmitSignUpForm(event, navigate)  //REDO when backend is ready, just t
     "Password":el.lblPass.value,
     "Firstname":el.lblName.value,
     "Surname":el.lblSurname.value,
-    "Phone":el.lblPhone.value
+    "Phone":el.lblPhone.value,
+    "CourseList":[]
   };
   localStorage.setItem("localUser", JSON.stringify(user));
   navigate("/Home");
