@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./HomePage.css";
@@ -36,6 +36,10 @@ function HomePage() {
     infoPlaceHolder[(currentIndex + 1) % infoPlaceHolder.length],
     infoPlaceHolder[(currentIndex + 2) % infoPlaceHolder.length],
   ];
+
+  useEffect(() => {
+    document.title = "Skillhub";
+  }, []);
 
   return (
     <>

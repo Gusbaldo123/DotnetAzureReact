@@ -38,7 +38,7 @@ function Header() {
             </div>
             :
             <div className="navHeaderButtons">
-              <Link className="btUser" to={{ pathname: "/account" }}>{user.Surname}</Link>
+              <Link className="btUser" to={{ pathname: user.isStudent?"/Student":"/Professor" }}>{user.Firstname}</Link>
               <button className="btLogOff" onClick={() => LogOffClick(navigate)}>LogOff</button>
             </div>
         }

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 
 import "./RecoverPasswordPage.css"
 
@@ -9,6 +9,10 @@ import Banner from "../../components/shared/Banner"
 
 function RecoverPasswordPage()
 {
+    useEffect(() => {
+        document.title = "Recover Password";
+      }, []);
+    
     return(<>
     <Header/>
     <Banner/>

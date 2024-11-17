@@ -1,5 +1,4 @@
-// LoginPage.js
-import React from "react";
+import React,{useEffect} from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 
 import "./LoginPage.css";
@@ -92,6 +91,7 @@ function SubmitSignUpForm(event, navigate)  //REDO when backend is ready, just t
     "Id":2, //Temporary Value
     "Email":el.lblEmail.value,
     "Password":el.lblPass.value,
+    "isStudent":true,
     "Firstname":el.lblName.value,
     "Surname":el.lblSurname.value,
     "Phone":el.lblPhone.value,
@@ -105,6 +105,10 @@ function LoginPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isLoginPage = searchParams.get("form") === "signIn";
+
+  useEffect(() => {
+    document.title = isLoginPage?"Login":"Sign In";
+  }, []);
 
   return (
     <>

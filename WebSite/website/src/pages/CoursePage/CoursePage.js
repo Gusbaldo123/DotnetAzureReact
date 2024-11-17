@@ -69,6 +69,10 @@ function CoursePage() {
     }
   }, [user, targetCourse.id]);
 
+  useEffect(() => {
+    document.title = targetCourse.Title;
+  }, []);
+
   return (
     <>
       <Header />

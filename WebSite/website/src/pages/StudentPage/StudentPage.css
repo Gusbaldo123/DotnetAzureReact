@@ -1,0 +1,132 @@
+.formStudent{
+    background-color: #003121;
+    border-radius: 25px 25px 0 0;
+    padding: 25px;
+    display: block;
+    justify-content: center;
+    margin: auto;
+    width: 30%;
+}
+.formStudent{
+    justify-content: center;
+    display:block;
+}
+.formStudent .lblEmail{
+    color: white;
+}
+.formStudent a{
+    color: white;
+    width: 80%;
+    margin: 5% auto;
+    font-size: larger;
+    text-align: center;
+}
+.formStudent h2{
+    width: 100%;
+    text-align: center;
+    font-size: 3em;
+    color:white;
+}
+.formStudent h3{
+    width: 100%;
+    text-align: center;
+    font-size: 1.5em;
+    color:white;
+}
+.formStudent *{
+    display: block;
+    font-size: 1.05em;
+}
+.formStudent div{
+    margin-bottom: 15px;
+    width: fit-content;
+    margin: auto;
+    padding: 5px;
+}
+.formStudent input{
+    padding: 5px;
+    margin-bottom: 20px;
+}
+.formStudent label{
+    color: white;
+}
+.formStudent button{
+    background-color: white;
+    border: 2px solid white;
+    border-radius: 20px;
+    padding: 5px;
+    width: 45%;
+    margin: 5% auto;
+    font-size: larger;
+    font-size: 0.90em;
+}
+.formStudent button:hover{
+    background-color: #02542D;
+    border: 2px solid white;
+    color: white;
+    transition: .4s;
+}
+.formStudent .btOptions{
+    display: flex;
+    width: 70%;
+}
+.formStudent .btDelete{
+    border: 2px solid red;
+    background-color: #003121;
+    color: red;
+}
+.formStudent .btDelete:hover{
+    border: 2px solid red;
+    background-color: #02542D;
+    color: red;
+}
+.studentVideos{
+    background-color: #003121;
+    border-radius: 25px 25px 0 0;
+    padding: 25px;
+    justify-content: center;
+    margin: 2% auto;
+    width: 60%;
+    height:2%;
+    color: white;
+    text-align: center;
+}
+.studentVideos h2{
+    font-size: 2em;
+    font-weight: bold;
+}
+.studentVideos .listVideos {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 1px solid gray;
+    padding: 2%;
+}
+.studentVideos .coursesStudent {
+    border: 2px solid transparent;
+    flex: 1 1 18%;
+    max-width: 18%;
+    box-sizing: border-box;
+    height: auto;
+    margin: 5px 0;
+    border-radius: 5%;
+}
+.studentVideos .coursesStudent:hover {
+    transition: .4s;
+    border: 2px solid white;
+    background-color:#02542D;
+}
+.studentVideos .coursesStudent progress{
+    width: 100%;
+}
+.studentVideos .coursesStudent img{
+    margin: auto;
+    width: 95%;
+    aspect-ratio: 5/3;
+}
+.studentVideos .coursesStudent h4{
+    margin: 0 auto;
+    width: 95%;
+    color: white;
+}

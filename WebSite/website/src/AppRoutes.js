@@ -2,8 +2,8 @@ import React from "react";
 
 import {BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import LoginPage from "./pages/LoginPage/LoginPage";
 import HomePage from "./pages/HomePage/HomePage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 import CoursePage from "./pages/CoursePage/CoursePage";
 import ProfessorPage from "./pages/ProfessorPage/ProfessorPage";
 import StudentPage from "./pages/StudentPage/StudentPage";
@@ -18,9 +18,9 @@ function AppRoutes()
         <Route path="/Home" element={<HomePage/>}/>
         <Route path="/Login" element={<LoginPage/>}/>
         <Route path="/Recover" element={<RecoverPasswordPage/>}/>
-        <Route path="/Course" element={<CoursePage/>}/>
         <Route path="/Student" element={<StudentPage/>}/>
         <Route path="/Professor" element={<ProfessorPage/>}/>
+        <Route path="/Course" element={<CoursePage/>}/>
       </Routes>
     </Router>
   );

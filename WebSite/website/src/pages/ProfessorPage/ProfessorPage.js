@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 
 import "./ProfessorPage.css";
 
@@ -8,6 +8,10 @@ import Banner from "../../components/shared/Banner";
 
 function ProfessorPage()
 {
+  useEffect(() => {
+    document.title = "TODO";
+  }, []);
+
   return(
     <>
       <Header/>
