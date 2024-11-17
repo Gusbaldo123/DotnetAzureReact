@@ -41,20 +41,7 @@ module.exports= {
         "Firstname":"Admin",
         "Surname":"SkillHub",
         "Phone":"+000 000 000 000",
-        "CourseList":[
-          {
-            "id":0,
-            "videoList":[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]
-          },
-          {
-            "id":1,
-            "videoList":[true,true,true]
-          },
-          {
-            "id":2,
-            "videoList":[true,true,false]
-          }
-        ]
+        "CourseList":[]
       },
       {
         "Id":1,

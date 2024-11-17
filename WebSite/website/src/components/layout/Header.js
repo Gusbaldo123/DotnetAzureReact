@@ -10,7 +10,7 @@ function Header() {
   function LogOffClick(navigate) {
     localStorage.setItem("localUser", "");
     alert("Logged off successfully")
-    navigate("/home");
+    navigate("/Home");
   }
 
   const iconWebsite = require("../../assets/IconSH.png");
@@ -26,7 +26,7 @@ function Header() {
     <header className="siteHeader">
       <nav className="navHeader">
         <div className="navHeaderIcon">
-          <Link className="iconHeader" to={{ pathname: '/home' }}>
+          <Link className="iconHeader" to={{ pathname: '/Home' }}>
             <img src={iconWebsite} alt="iconWebsite" />
           </Link>
         </div>
@@ -38,7 +38,7 @@ function Header() {
             </div>
             :
             <div className="navHeaderButtons">
-              <Link className="btUser" to={{ pathname: user.isStudent?"/Student":"/Professor" }}>{user.Firstname}</Link>
+              <Link className="btUser" to={{pathname:"/Account"}}>{user.Firstname}</Link>
               <button className="btLogOff" onClick={() => LogOffClick(navigate)}>LogOff</button>
             </div>
         }

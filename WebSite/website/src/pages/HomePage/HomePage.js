@@ -28,7 +28,7 @@ function HomePage() {
     );
   };
   const courseClick = (id) => {
-    navigate(`/course?courseID=${id}`);
+    navigate(`/Course?courseID=${id}`);
   };  
 
   const visibleItems = [

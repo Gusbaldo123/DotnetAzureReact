@@ -1,4 +1,4 @@
-.formStudent{
+.accountContent .formAccount{
     background-color: #003121;
     border-radius: 25px 25px 0 0;
     padding: 25px;
@@ -7,50 +7,50 @@
     margin: auto;
     width: 30%;
 }
-.formStudent{
+.accountContent .formAccount{
     justify-content: center;
     display:block;
 }
-.formStudent .lblEmail{
+.accountContent .formAccount .lblEmail{
     color: white;
 }
-.formStudent a{
+.accountContent .formAccount a{
     color: white;
     width: 80%;
     margin: 5% auto;
     font-size: larger;
     text-align: center;
 }
-.formStudent h2{
+.accountContent .formAccount h2{
     width: 100%;
     text-align: center;
     font-size: 3em;
     color:white;
 }
-.formStudent h3{
+.accountContent .formAccount h3{
     width: 100%;
     text-align: center;
     font-size: 1.5em;
     color:white;
 }
-.formStudent *{
+.accountContent .formAccount *{
     display: block;
     font-size: 1.05em;
 }
-.formStudent div{
+.accountContent .formAccount div{
     margin-bottom: 15px;
     width: fit-content;
     margin: auto;
     padding: 5px;
 }
-.formStudent input{
+.accountContent .formAccount input{
     padding: 5px;
     margin-bottom: 20px;
 }
-.formStudent label{
+.accountContent .formAccount label{
     color: white;
 }
-.formStudent button{
+.accountContent .formAccount button{
     background-color: white;
     border: 2px solid white;
     border-radius: 20px;
@@ -60,27 +60,27 @@
     font-size: larger;
     font-size: 0.90em;
 }
-.formStudent button:hover{
+.accountContent .formAccount button:hover{
     background-color: #02542D;
     border: 2px solid white;
     color: white;
     transition: .4s;
 }
-.formStudent .btOptions{
+.accountContent .formAccount .btOptions{
     display: flex;
     width: 70%;
 }
-.formStudent .btDelete{
+.accountContent .formAccount .btDelete{
     border: 2px solid red;
     background-color: #003121;
     color: red;
 }
-.formStudent .btDelete:hover{
+.accountContent .formAccount .btDelete:hover{
     border: 2px solid red;
     background-color: #02542D;
     color: red;
 }
-.studentVideos{
+.videoListContainer{
     background-color: #003121;
     border-radius: 25px 25px 0 0;
     padding: 25px;
@@ -91,11 +91,11 @@
     color: white;
     text-align: center;
 }
-.studentVideos h2{
+.videoListContainer h2{
     font-size: 2em;
     font-weight: bold;
 }
-.studentVideos .listVideos {
+.videoListContainer .listVideos {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -103,7 +103,7 @@
     border-top: 1px solid gray;
     padding: 2%;
 }
-.studentVideos .coursesStudent {
+.videoListContainer .courseOption {
     border: 2px solid transparent;
     flex: 1 1 18%;
     max-width: 18%;
@@ -112,20 +112,20 @@
     margin: 5px 0;
     border-radius: 5%;
 }
-.studentVideos .coursesStudent:hover {
+.videoListContainer .courseOption:hover {
     transition: .4s;
     border: 2px solid white;
     background-color:#02542D;
 }
-.studentVideos .coursesStudent progress{
+.videoListContainer .courseOption progress{
     width: 100%;
 }
-.studentVideos .coursesStudent img{
+.videoListContainer .courseOption img{
     margin: auto;
     width: 95%;
     aspect-ratio: 5/3;
 }
-.studentVideos .coursesStudent h4{
+.videoListContainer .courseOption h4{
     margin: 0 auto;
     width: 95%;
     color: white;

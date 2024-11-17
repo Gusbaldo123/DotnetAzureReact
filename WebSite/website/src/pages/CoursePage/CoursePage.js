@@ -16,14 +16,14 @@ function VideoClick(url) {
 function CheckBoxChange(event, user, List, targetCourse, i, setUser) {
   if (!user) return;
   const newList = [...List];
-  newList[i] = event.target.checked; 
+  newList[i] = event.target.checked;
   setCourse(newList, user, targetCourse, setUser);
 }
 
 function setCourse(List, user, targetCourse, setUser) {
   const updatedUser = { ...user };
   const courseIndex = updatedUser.CourseList.findIndex(course => course.id == targetCourse.id);
-  
+
   if (courseIndex >= 0) {
     updatedUser.CourseList[courseIndex].videoList = List;
   } else {
@@ -35,6 +35,17 @@ function setCourse(List, user, targetCourse, setUser) {
 
   setUser(updatedUser);
   localStorage.setItem("localUser", JSON.stringify(updatedUser));
+}
+
+function DeleteVideo({id})
+{
+  if (window.confirm("Delete this video?")) {
+    console.log("TODO");
+  }
+}
+function AddVideo({id})
+{
+  console.log("TODO");
 }
 
 function CoursePage() {
@@ -91,35 +102,52 @@ function CoursePage() {
           </article>
           <br />
           <div className="courseList">
-          {
-            targetCourse.videoList.map((video, i) => (
-              <div key={i.toString()} className={`videoGroup group${i}`} id={`group${i}`}>
-                <input
-                  disabled={user == null}
-                  className={`videoCheckbox ch${i}`}
-                  id={`ch${i}`}
-                  type="checkbox"
-                  checked={List[i]}
-                  onChange={(e) => {
-                    CheckBoxChange(e, user, List, targetCourse, i, setUser);
-                  }}
-                />
-                <div
-                  className={`courseVideo vid${i}`}
-                  id={`vid${i}`}
-                  onClick={() => {
-                    VideoClick(video, targetCourse, List, i);
-                    const checkboxEvent = { target: { checked: true } }; 
-                    CheckBoxChange(checkboxEvent, user, List, targetCourse, i, setUser); 
-                  }}
-                >
-                  <p className={`lblVideo txtVid${i}`} id={`txtVid${i}`}>
-                    <b>{`Video ${i + 1}`}</b>
-                  </p>
+            {
+              targetCourse.videoList.map((video, i) => (
+                <div key={i.toString()} className={`videoGroup group${i}`} id={`group${i}`}>
+                  <input
+                    disabled={user == null}
+                    className={`videoCheckbox ch${i}`}
+                    id={`ch${i}`}
+                    type="checkbox"
+                    checked={List[i]}
+                    onChange={(e) => {
+                      CheckBoxChange(e, user, List, targetCourse, i, setUser);
+                    }}
+                  />
+                  <div
+                    className={`courseVideo vid${i}`}
+                    id={`vid${i}`}
+                    onClick={() => {
+                      VideoClick(video, targetCourse, List, i);
+                      const checkboxEvent = { target: { checked: true } };
+                      CheckBoxChange(checkboxEvent, user, List, targetCourse, i, setUser);
+                    }}
+                  >
+                    <p className={`lblVideo txtVid${i}`} id={`txtVid${i}`}>
+                      <b>{`Video ${i + 1}`}</b>
+                    </p>
+                  </div>
+                  {user.isStudent?null:<button className="btDelete" onClick={()=>{DeleteVideo(i)}}>Del</button>}
                 </div>
-              </div>
-            ))
-          }
+              ))
+            }
+            {
+              user.isStudent?null:
+              (
+                <div key={targetCourse.videoList.length.toString()} className={`videoGroup group${targetCourse.videoList.length}`} id={`group${targetCourse.videoList.length}`}>
+                  <div
+                    className={`courseVideo newVideo vid${targetCourse.videoList.length}`}
+                    id={`vid${targetCourse.videoList.length}`}
+                    onClick={()=>{AddVideo(targetCourse.videoList.length)}}
+                  >
+                    <p className={`lblVideo txtVid${targetCourse.videoList.length}`} id={`txtVid${targetCourse.videoList.length}`}>
+                      <b>Add new video</b>
+                    </p>
+                  </div>
+                </div>
+              )
+            }
 
           </div>
         </section>
