@@ -1,13 +1,16 @@
+//#region imports
 import React from "react";
 
-import {BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import HomePage from "./pages/HomePage/HomePage";
-import LoginPage from "./pages/LoginPage/LoginPage";
-import RecoverPasswordPage from "./pages/RecoverPasswordPage/RecoverPasswordPage";
-import AccountPage from "./pages/AccountPage/AccountPage";
-import CoursePage from "./pages/CoursePage/CoursePage";
+import HomePage from "../pages/HomePage/HomePage";
+import LoginPage from "../pages/LoginPage/LoginPage";
+import RecoverPasswordPage from "../pages/RecoverPasswordPage/RecoverPasswordPage";
+import AccountPage from "../pages/AccountPage/AccountPage";
+import CoursePage from "../pages/CoursePage/CoursePage";
+//#endregion
 
+//#region JSX
 function AppRoutes()
 {
   return(
@@ -23,5 +26,6 @@ function AppRoutes()
     </Router>
   );
 }
+//#endregion
 
 export default AppRoutes;

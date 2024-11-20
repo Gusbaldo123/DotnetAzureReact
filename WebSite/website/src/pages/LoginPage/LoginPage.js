@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 
 import "./LoginPage.css";
@@ -7,12 +7,13 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
-const infoPlaceHolder = require("../../TemporaryInfo.js").UserInfo();
+import UserManager from "../../utils/UserManager.js";
+import userManager from "../../utils/UserManager.js";
 
 function LogInForm({ navigate }) {
   return (
     <>
-      <form className="formLogin" onSubmit={(e) => SubmitLoginForm(e, navigate )}>
+      <form className="formLogin" onSubmit={(e) => SubmitLoginForm(e, navigate)}>
         <h2>Log In</h2>
         <div>
           <label htmlFor="lblEmail">Email</label>
@@ -25,35 +26,34 @@ function LogInForm({ navigate }) {
         <button type="submit">LogIn</button>
         <Link className="btForgot" to={{ pathname: "/Recover" }}>Forgot your password?</Link>
         <Link className="btSignUp" to={{ pathname: "/login", search: "?form=signUp" }}>Don't have an account?</Link>
-      </form>
+      </form>\
     </>
   );
 }
-function SubmitLoginForm(event, navigate) //REDO when backend is ready, just temp values
+function SubmitLoginForm(event, navigate)
 {
   event.preventDefault();
-  const email = event.target.elements.lblEmail.value.toLowerCase();
-  const password = event.target.elements.lblPass.value;
 
-  const user = infoPlaceHolder.find((user) => {
-    const mailChecker = user.Email.toLowerCase() === email;
-    const passChecker = user.Password === password;
-    return mailChecker && passChecker;
-  });
+  const credentials = {
+    email: event.target.elements.lblEmail.value.toLowerCase(),
+    password: event.target.elements.lblPass.value
+  }
+
+  const user = UserManager.LoginUser(credentials);
 
   if (!user) {
     alert("Invalid Email/Password");
     return;
   }
 
-  localStorage.setItem("localUser", JSON.stringify(user));
+  UserManager.SetLocalUser(user);
   navigate("/Home");
 }
 
 function SignUpForm({ navigate }) {
   return (
     <>
-      <form action="post" className="formSignUp" onSubmit={(e)=>{SubmitSignUpForm(e,navigate)}}>
+      <form action="post" className="formSignUp" onSubmit={(e) => { SubmitSignUpForm(e, navigate) }}>
         <h2>SignUp</h2>
         <div>
           <label htmlFor="lblEmail">Email</label>
@@ -83,21 +83,19 @@ function SignUpForm({ navigate }) {
     </>
   );
 }
-function SubmitSignUpForm(event, navigate)  //REDO when backend is ready, just temp values
+function SubmitSignUpForm(event, navigate)
 {
   event.preventDefault();
   const el = event.target.elements;
-  const user = {
-    "Id":2, //Temporary Value
-    "Email":el.lblEmail.value,
-    "Password":el.lblPass.value,
-    "isStudent":true,
-    "Firstname":el.lblName.value,
-    "Surname":el.lblSurname.value,
-    "Phone":el.lblPhone.value,
-    "CourseList":[]
+  const userInfo = {
+    "Email": el.lblEmail.value,
+    "Password": el.lblPass.value,
+    "Firstname": el.lblName.value,
+    "Surname": el.lblSurname.value,
+    "Phone": el.lblPhone.value
   };
-  localStorage.setItem("localUser", JSON.stringify(user));
+  const user = UserManager.CreateUser(userInfo);
+  userManager.SetLocalUser(user);
   navigate("/Home");
 }
 
@@ -107,7 +105,7 @@ function LoginPage() {
   const isLoginPage = searchParams.get("form") === "signIn";
 
   useEffect(() => {
-    document.title = isLoginPage?"Login":"Sign In";
+    document.title = isLoginPage ? "Login" : "Sign In";
   }, []);
 
   return (
@@ -116,7 +114,7 @@ function LoginPage() {
       <main>
         <Banner />
         <section className="loginContent">
-          {isLoginPage ? <LogInForm navigate={navigate}/>:<SignUpForm navigate={navigate}/>}
+          {isLoginPage ? <LogInForm navigate={navigate} /> : <SignUpForm navigate={navigate} />}
         </section>
       </main>
       <Footer />

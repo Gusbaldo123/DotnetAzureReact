@@ -8,12 +8,11 @@ import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
 
-const infoPlaceHolder = require("../../TemporaryInfo.js").CourseInfo();
+const infoPlaceHolder = require("../../utils/TemporaryInfo.js").CourseInfo();
 
 
 function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsToShow = 2;
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -27,9 +26,6 @@ function HomePage() {
       (prevIndex - 1 + infoPlaceHolder.length) % infoPlaceHolder.length
     );
   };
-  const courseClick = (id) => {
-    navigate(`/Course?courseID=${id}`);
-  };  
 
   const visibleItems = [
     infoPlaceHolder[currentIndex],
@@ -64,7 +60,7 @@ function HomePage() {
             </button>
             <div className="carouselWrapper">
             {visibleItems.map((course, i) => (
-              <div key={i} className="course fade"  onClick={() => courseClick(course.id)}>
+              <div key={i} className="course fade"  onClick={() => navigate(`/Course?courseID=${course.id}`)}>
                 <img src={course.Img} alt={`course${i}`}/>
                 <div className="courseName">{course.Title}</div>
               </div>

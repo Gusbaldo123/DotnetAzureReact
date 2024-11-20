@@ -1,3 +1,4 @@
+//#region imports
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CoursePage.css";
@@ -5,22 +6,21 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
-//Temporary
-const CourseInfo = require("../../TemporaryInfo.js").CourseInfo();
-//Temporary
+import UserManager from "../../utils/UserManager.js";
+import CourseManager from "../../utils/CourseManager.js";
 
-function VideoClick(url) {
-  window.open(url);
-}
+export default CoursePage;
+//#endregion
 
+//#region Handlers
 function CheckBoxChange(event, user, List, targetCourse, i, setUser) {
   if (!user) return;
   const newList = [...List];
   newList[i] = event.target.checked;
-  setCourse(newList, user, targetCourse, setUser);
+  SetCourse(newList, user, targetCourse, setUser);
 }
 
-function setCourse(List, user, targetCourse, setUser) {
+function SetCourse(List, user, targetCourse, setUser) {
   const updatedUser = { ...user };
   const courseIndex = updatedUser.CourseList.findIndex(course => course.id == targetCourse.id);
 
@@ -34,9 +34,10 @@ function setCourse(List, user, targetCourse, setUser) {
   }
 
   setUser(updatedUser);
-  localStorage.setItem("localUser", JSON.stringify(updatedUser));
+  UserManager.setUser(updatedUser);
 }
 
+//#region TODO
 function DeleteVideo({id})
 {
   if (window.confirm("Delete this video?")) {
@@ -47,21 +48,16 @@ function AddVideo({id})
 {
   console.log("TODO");
 }
+//#endregion
+//#endregion
 
+//#region JSX
 function CoursePage() {
   const [searchParams] = useSearchParams();
   let courseId = searchParams.get("courseID");
-  const targetCourse = CourseInfo.find(course => course.id == courseId);
+  const targetCourse = CourseManager.getCourse(courseId);
 
-  const [user, setUser] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("localUser"));
-    } catch {
-      return null;
-    }
-  });
-
-  const chBox = useRef(null);
+  const [user, setUser] = useState(() => UserManager.loginUser());
 
   let defaultVideoList = [];
   targetCourse.videoList.forEach(() => defaultVideoList.push(false));
@@ -83,6 +79,8 @@ function CoursePage() {
   useEffect(() => {
     document.title = targetCourse.Title;
   }, []);
+
+  let isStudent = user && user.isStudent;
 
   return (
     <>
@@ -119,7 +117,7 @@ function CoursePage() {
                     className={`courseVideo vid${i}`}
                     id={`vid${i}`}
                     onClick={() => {
-                      VideoClick(video, targetCourse, List, i);
+                      window.open(video);
                       const checkboxEvent = { target: { checked: true } };
                       CheckBoxChange(checkboxEvent, user, List, targetCourse, i, setUser);
                     }}
@@ -128,12 +126,12 @@ function CoursePage() {
                       <b>{`Video ${i + 1}`}</b>
                     </p>
                   </div>
-                  {user.isStudent?null:<button className="btDelete" onClick={()=>{DeleteVideo(i)}}>Del</button>}
+                  {user&&!isStudent?<button className="btDelete" onClick={()=>{DeleteVideo(i)}}>Del</button>:null}
                 </div>
               ))
             }
             {
-              user.isStudent?null:
+              user&&!isStudent?
               (
                 <div key={targetCourse.videoList.length.toString()} className={`videoGroup group${targetCourse.videoList.length}`} id={`group${targetCourse.videoList.length}`}>
                   <div
@@ -146,7 +144,7 @@ function CoursePage() {
                     </p>
                   </div>
                 </div>
-              )
+              ):null
             }
 
           </div>
@@ -156,5 +154,4 @@ function CoursePage() {
     </>
   );
 }
-
-export default CoursePage;
+//#endregion

@@ -1,3 +1,4 @@
+//#region imports
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,16 +8,30 @@ import Header from "../../components/layout/Header.js";
 import Footer from "../../components/layout/Footer.js";
 import Banner from "../../components/shared/Banner.js";
 
-const infoPlaceHolder = require("../../TemporaryInfo.js").CourseInfo();
+import UserManager from "../../utils/UserManager.js";
+import CourseManager from "../../utils/CourseManager.js";
 
-function SubmitUpdateProfile(e, navigate) {
+export default AccountPage;
+//#endregion
+
+//#region Handlers
+function UpdateAccount(e, navigate) {
     e.preventDefault();
 
     navigate("/home");
 }
+//#region TODO
+function AddCourse()
+{
+    //Todo Backend
+    console.log("Todo");
+}
+//#endregion
+//#endregion
 
+//#region JSX
 function CourseImage({ id, user, navigate }) {
-    const targetCourse = infoPlaceHolder.find((courseArg) => courseArg.id === id);
+    const targetCourse = CourseManager.GetCourse(id);
     const userTargetCourse = user.CourseList.find((courseArg) => courseArg.id === id);
     let counterDone = 0;
 
@@ -30,15 +45,8 @@ function CourseImage({ id, user, navigate }) {
         </div>
     ) : null;
 }
-function AddCourse()
-{
-    //Todo Backend
-    console.log("Todo");
-}
-function NewCourseImage({user}) {
+function NewCourseImage({user, id}) {
     if(user.isStudent) return;
-
-    let id = infoPlaceHolder.length;
 
     return <div className="courseOption" id={`course${id}`} onClick={AddCourse}>
         <img src={require("../../assets/NewCourse.png")} alt="New Course" />
@@ -56,15 +64,14 @@ function CourseList({ user, navigate }) {
                         user.CourseList.length <= 0 ?
                             (<p>You haven't started a course yet</p>) : (user.CourseList.map((course) => <CourseImage key={course.id} id={course.id} user={user} navigate={navigate} />)) :
                         (
-                            infoPlaceHolder.map((course) => <CourseImage key={course.id} id={course.id} user={user} navigate={navigate} />)
+                            CourseManager.GetAllCourses().map((course) => <CourseImage key={course.id} id={course.id} user={user} navigate={navigate} />)
                         )
                 }
-                <NewCourseImage user={user}/>
+                <NewCourseImage user={user} id={user.CourseList.length}/>
             </div>
         </div>
     )
 }
-
 function AccountPage() {
     const navigate = useNavigate();
 
@@ -72,21 +79,19 @@ function AccountPage() {
         document.title = 'My Account';
     }, []);
 
-    let user = null;
-    try {
-        user = JSON.parse(localStorage.getItem("localUser"));
-    } catch (error) {
-        user = null;
-    }
+    let user = UserManager.LoginUser();
+    
     useEffect(() => {
         if (!user) navigate("/Home");
     }, [user, navigate]);
+
+    if(!user) return;
     return (
         <>
             <Header />
             <Banner />
             <section className="accountContent">
-                <form action="post" className="formAccount" onSubmit={(e) => { SubmitUpdateProfile(e, navigate) }} onChange={() => { }}>
+                <form action="post" className="formAccount" onSubmit={(e) => { UpdateAccount(e, navigate) }} onChange={() => { }}>
                     <h2>{user.isStudent ? `${user.Firstname}'s Account` : `Mr./Ms ${user.Surname}'s Account`}</h2>
                     <div>
                         <label htmlFor="lblEmail">Email</label>
@@ -122,5 +127,4 @@ function AccountPage() {
         </>
     );
 }
-
-export default AccountPage;
+//#endregion
