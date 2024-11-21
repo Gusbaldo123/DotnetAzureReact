@@ -1,12 +1,3 @@
-body {
-  background-color: #1E1E1E;
-}
-
-.content {
-  width: 90%;
-  margin: auto;
-}
-
 .contentCourseSearch {
   display: flex;
   margin: auto auto 15px auto;

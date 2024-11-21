@@ -1,5 +1,5 @@
 //#region imports
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 
@@ -11,14 +11,16 @@ export default Header;
 function Header() {
 
   //#region Handlers
-  function LogoffClickHandler(navigate) {
-    UserManager.SetLocalUser(null);
+  function LogoffClickHandler(navigate,SetUser) {
+    SetUser(null);
+    UserManager.setLocalUser(null);
     alert("Logged off successfully")
     navigate("/Home");
   }
   //#endregion
+  
   //#region Components
-  function RenderLoginButtons({ user, navigate }) {
+  function RenderLoginButtons({ user, navigate, SetUser }) {
     return user == null ? //if unlogged, return login/signup buttons
       <div className="navHeaderButtons">
         <Link className="btSignIn" to={{ pathname: "/login", search: "?form=signIn" }}>Sign In</Link>
@@ -27,13 +29,18 @@ function Header() {
       : // if logged, return account/logoff buttons
       <div className="navHeaderButtons">
         <Link className="btUser" to={{ pathname: "/Account" }}>{user.Firstname}</Link>
-        <button className="btLogOff" onClick={() => LogoffClickHandler(navigate)}>LogOff</button>
+        <button className="btLogOff" onClick={() => LogoffClickHandler(navigate,SetUser)}>LogOff</button>
       </div>
   }
   //#endregion
 
+  const [user, SetUser] = useState(null);
   const navigate = useNavigate();
-  let user = UserManager.GetLocalUser();
+
+  useEffect(() => {
+    const localUser = UserManager.getLocalUser();
+    SetUser(localUser);
+  }, []);
 
   //#region JSX
   return (
@@ -44,7 +51,7 @@ function Header() {
             <img src={require("../../assets/IconSH.png")} alt="iconWebsite" />
           </Link>
         </div>
-        <RenderLoginButtons user={user} navigate={navigate}/>
+        <RenderLoginButtons user={user} navigate={navigate} SetUser={SetUser}/>
       </nav>
     </header>
   );

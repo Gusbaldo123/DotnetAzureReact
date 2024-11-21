@@ -1,7 +1,4 @@
-//#region imports
-const ApiCallManager = new ApiManager();
-export default ApiCallManager;
-//#endregion
+import TemporaryInfo from "./TemporaryInfo"; // TEMPORARY, redo when backend is ready
 
 class ApiManager {
   //#region Handlers
@@ -10,23 +7,47 @@ class ApiManager {
   }
 
   //#region Courses
-  GetAllCourses = async () => {
-    const response = await fetch(`${BASE_URL}/selectCourses`);
+  getAllCourses = async () => {
+    return TemporaryInfo.CourseInfo(); // Remove when backend is ready
+
+
+    const response = await fetch(`${this.BASE_URL}/selectCourses`);
     if (!response.ok) return null;
 
     return response.json();
   };
   getCourse = async (id)=>{
-    const response = await fetch(`${BASE_URL}/getCourse?id=${id}`);
+    return TemporaryInfo.CourseInfo().find((course)=>course.id==id); // Remove when backend is ready
+
+
+    const response = await fetch(`${this.BASE_URL}/getCourse?id=${id}`);
     if (!response.ok) return null;
 
     return response.json();
+  }
+  getUserCourses = async (user)=>{
+    const allCourses = TemporaryInfo.CourseInfo();
+    const userCoursesId = user.CourseList;
+    let userCourses = [];
+
+    if(!userCoursesId) return [];
+    userCoursesId.forEach(userCourse => {
+      allCourses.forEach(course => {
+        if(userCourse.id == course.id) userCourses.push(course);
+      });
+    });
+    return userCourses;
   }
   //#endregion
 
   //#region Users
   loginUser = async (credentials) => {
-    const response = await fetch(`${BASE_URL}/loginUser`, {
+    if(!credentials) return;
+    return TemporaryInfo.UserInfo().find((user)=>user.Email.toLowerCase() == credentials.Email.toLowerCase() && user.Password == credentials.Password);
+
+
+
+    const response = await fetch(`${this.BASE_URL}/loginUser`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
@@ -37,7 +58,9 @@ class ApiManager {
   };
   
   createUser = async function(data) {
-    const response = await fetch(`${BASE_URL}/createUser`, {
+    return;
+    
+    const response = await fetch(`${this.BASE_URL}/createUser`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -49,3 +72,8 @@ class ApiManager {
   //#endregion
   //#endregion
 }
+
+//#region imports
+const apiManager = new ApiManager();
+export default apiManager;
+//#endregion

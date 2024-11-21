@@ -1,23 +1,31 @@
 //#region imports
 import ApiManager from "./ApiManager.js";
-
-export default CourseManager;
 //#endregion
 
-class CourseManager{
-    constructor(){
-        if(CourseManager.instance)
+class CourseManager {
+    //#region Handlers
+    constructor() {
+        if (CourseManager.instance)
             return CourseManager.instance;
-        
+
         this.listeners = new Set();
 
         CourseManager.instance = this;
     }
-    GetAllCourses(){
-        return ApiManager.GetAllCourses();
+    getAllCourses() {
+        return ApiManager.getAllCourses();
     }
-    GetCourse(id){
-        return ApiManager.GetCourse(id);
+    getUserCourses(user) {
+        return ApiManager.getUserCourses(user);
     }
-    
+    getCourse(id) {
+        return ApiManager.getCourse(id);
+    }
+    //#endregion
 }
+
+//#region exports
+
+const courseManager = new CourseManager();
+export default courseManager;
+//#endregion

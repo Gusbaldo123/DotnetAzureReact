@@ -1,5 +1,5 @@
 //#region imports
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./CoursePage.css";
 import Header from "../../components/layout/Header";
@@ -8,6 +8,7 @@ import Banner from "../../components/shared/Banner";
 
 import UserManager from "../../utils/UserManager.js";
 import CourseManager from "../../utils/CourseManager.js";
+import VideoManager from "../../utils/VideoManager.js";
 
 export default CoursePage;
 //#endregion
@@ -34,19 +35,22 @@ function SetCourse(List, user, targetCourse, setUser) {
   }
 
   setUser(updatedUser);
-  UserManager.setUser(updatedUser);
+  UserManager.setLocalUser(updatedUser);
 }
 
-//#region TODO
-function DeleteVideo({id})
-{
+function DeleteVideo({ courseId, id }) {
   if (window.confirm("Delete this video?")) {
-    console.log("TODO");
+    VideoManager.deleteVideo(courseId, id);
   }
 }
-function AddVideo({id})
-{
-  console.log("TODO");
+//#region TODO
+function AddVideo({ courseId, id }) {
+  //TODO
+  VideoManager.addVideo(courseId, id, {
+    Title: "Placeholder Title",
+    Img: require("../../assets/NewCourse.png"),
+    Description: "Placeholder Text",
+  }) 
 }
 //#endregion
 //#endregion
@@ -54,33 +58,48 @@ function AddVideo({id})
 //#region JSX
 function CoursePage() {
   const [searchParams] = useSearchParams();
-  let courseId = searchParams.get("courseID");
-  const targetCourse = CourseManager.getCourse(courseId);
+  const courseId = searchParams.get("courseID");
+  
 
-  const [user, setUser] = useState(() => UserManager.loginUser());
-
-  let defaultVideoList = [];
-  targetCourse.videoList.forEach(() => defaultVideoList.push(false));
-
-  const userCourseInfo = user?.CourseList?.find(course => course.id == targetCourse.id);
-  const List = userCourseInfo ? userCourseInfo.videoList : defaultVideoList;
+  const [user, setUser] = useState(() => UserManager.getLocalUser());
+  const [targetCourse, setTargetCourse] = useState(null);
+  const [List, setList] = useState([]);
 
   useEffect(() => {
-    if (user && !user.CourseList.find(course => course.id == targetCourse.id)) {
-      const newUser = { ...user };
-      newUser.CourseList.push({
-        id: targetCourse.id,
-        videoList: defaultVideoList,
-      });
-      setUser(newUser);
+    const loadCourse = async () => {
+      const course = await CourseManager.getCourse(courseId);
+      setTargetCourse(course);
+
+      let defaultVideoList = [];
+      course.videoList.forEach(() => defaultVideoList.push(false));
+
+      const userCourseInfo = user?.CourseList?.find(course => course.id == courseId);
+      setList(userCourseInfo ? userCourseInfo.videoList : defaultVideoList);
+
+      if (user && !user.CourseList.find(course => course.id == courseId)) {
+        const newUser = { ...user };
+        newUser.CourseList.push({
+          id: courseId,
+          videoList: defaultVideoList,
+        });
+        setUser(newUser);
+      }
+    };
+
+    loadCourse();
+  }, [courseId, user]);
+
+  useEffect(() => {
+    if (targetCourse) {
+      document.title = targetCourse.Title;
     }
-  }, [user, targetCourse.id]);
+  }, [targetCourse]);
 
-  useEffect(() => {
-    document.title = targetCourse.Title;
-  }, []);
+  if (!targetCourse) {
+    return <div>Loading...</div>;
+  }
 
-  let isStudent = user && user.isStudent;
+  const isStudent = user && user.isStudent;
 
   return (
     <>
@@ -126,27 +145,26 @@ function CoursePage() {
                       <b>{`Video ${i + 1}`}</b>
                     </p>
                   </div>
-                  {user&&!isStudent?<button className="btDelete" onClick={()=>{DeleteVideo(i)}}>Del</button>:null}
+                  {user && !isStudent ? <button className="btDelete" onClick={() => { DeleteVideo(courseId, i) }}>Del</button> : null}
                 </div>
               ))
             }
             {
-              user&&!isStudent?
-              (
-                <div key={targetCourse.videoList.length.toString()} className={`videoGroup group${targetCourse.videoList.length}`} id={`group${targetCourse.videoList.length}`}>
-                  <div
-                    className={`courseVideo newVideo vid${targetCourse.videoList.length}`}
-                    id={`vid${targetCourse.videoList.length}`}
-                    onClick={()=>{AddVideo(targetCourse.videoList.length)}}
-                  >
-                    <p className={`lblVideo txtVid${targetCourse.videoList.length}`} id={`txtVid${targetCourse.videoList.length}`}>
-                      <b>Add new video</b>
-                    </p>
+              user && !isStudent ?
+                (
+                  <div key={targetCourse.videoList.length.toString()} className={`videoGroup group${targetCourse.videoList.length}`} id={`group${targetCourse.videoList.length}`}>
+                    <div
+                      className={`courseVideo newVideo vid${targetCourse.videoList.length}`}
+                      id={`vid${targetCourse.videoList.length}`}
+                      onClick={() => { AddVideo(courseId, targetCourse.videoList.length) }}
+                    >
+                      <p className={`lblVideo txtVid${targetCourse.videoList.length}`} id={`txtVid${targetCourse.videoList.length}`}>
+                        <b>Add new video</b>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ):null
+                ) : null
             }
-
           </div>
         </section>
       </main>

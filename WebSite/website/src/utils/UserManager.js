@@ -1,8 +1,5 @@
 //#region imports
 import ApiManager from "./ApiManager.js";
-
-const userManager = new UserManager();
-export default userManager;
 //#endregion
 
 class UserManager {
@@ -11,43 +8,37 @@ class UserManager {
         if (UserManager.instance) {
             return UserManager.instance;
         }
-
-        this.localUser = () => {
-            try {
-                return JSON.parse(localStorage.getItem("localUser")) || null;
-            } catch {
-                return null;
-            }
+        try {
+            this.localUser= JSON.parse(localStorage.getItem("localUser")) || null;
+        } catch {
+            this.localUser= null;
         }
-        this.listeners = new Set();
-
         UserManager.instance = this;
     }
-    LoginUser(credentials) {
+    loginUser(credentials) {
+        if(!credentials)return null;
         return ApiManager.loginUser(credentials);
     }
-    CreateUser(data) {
+    createUser(data) {
         return ApiManager.createUser(data);
     }
-    GetLocalUser() {
+    getLocalUser() {
+        try {
+            this.localUser= JSON.parse(localStorage.getItem("localUser")) || null;
+        } catch {
+            this.localUser= null;
+        }
         return this.localUser;
     }
-    SetLocalUser(newUser) {
+    setLocalUser(newUser) {
         this.localUser = newUser;
         localStorage.setItem("localUser", JSON.stringify(this.localUser));
-        this.listeners.forEach((callback) => callback(this.localUser));
     }
-
-    //#region Listeners
-    AddListener(callback) {
-        this.listeners.add(callback);
-    }
-    RemoveListener(callback) {
-        this.listeners.delete(callback);
-    }
-    RemoveAllListeners() {
-        this.listeners.clear();
-    }
-    //#endregion
     //#endregion
 }
+
+//#region exports
+
+const userManager = new UserManager();
+export default userManager;
+//#endregion

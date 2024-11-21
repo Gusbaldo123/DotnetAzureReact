@@ -1,5 +1,5 @@
 //#region imports
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./AccountPage.css";
@@ -21,8 +21,7 @@ function UpdateAccount(e, navigate) {
     navigate("/home");
 }
 //#region TODO
-function AddCourse()
-{
+function AddCourse() {
     //Todo Backend
     console.log("Todo");
 }
@@ -30,62 +29,67 @@ function AddCourse()
 //#endregion
 
 //#region JSX
-function CourseImage({ id, user, navigate }) {
-    const targetCourse = CourseManager.GetCourse(id);
-    const userTargetCourse = user.CourseList.find((courseArg) => courseArg.id === id);
+function CourseImage({ targetCourse, user, navigate }) {
+    const userTargetCourse = user.CourseList.find((courseArg) => courseArg.id == targetCourse.id);
     let counterDone = 0;
 
     if (user.isStudent) userTargetCourse.videoList.forEach((vid) => { if (vid) counterDone++; });
 
     return targetCourse ? (
-        <div className="courseOption" id={`course${targetCourse.id}`} onClick={() => { navigate(`/course?courseID=${id}`) }}>
+        <div className="courseOption" id={`course${targetCourse.id}`} onClick={() => { navigate(`/course?courseID=${targetCourse.id}`) }}>
             <img src={targetCourse.Img} alt="Course Image" />
             <progress id="file" value={user.isStudent ? counterDone : targetCourse.videoList.length} max={targetCourse.videoList.length} />
             <h4>{targetCourse.Title}</h4>
         </div>
     ) : null;
 }
-function NewCourseImage({user, id}) {
-    if(user.isStudent) return;
+function NewCourseImage({ user, id }) {
+    if (user.isStudent) return;
 
     return <div className="courseOption" id={`course${id}`} onClick={AddCourse}>
         <img src={require("../../assets/NewCourse.png")} alt="New Course" />
         <h4>Create Course</h4>
     </div>
 }
-function CourseList({ user, navigate }) {
+function CourseList({ user, navigate, courseList }) {
+    if (!courseList) return;
     return (
         <div className="videoListContainer">
             <h2>{user.isStudent ? "Your Progress" : "Posted Courses"}</h2>
             <br />
             <div className="listVideos">
                 {
-                    user.isStudent ?
-                        user.CourseList.length <= 0 ?
-                            (<p>You haven't started a course yet</p>) : (user.CourseList.map((course) => <CourseImage key={course.id} id={course.id} user={user} navigate={navigate} />)) :
-                        (
-                            CourseManager.GetAllCourses().map((course) => <CourseImage key={course.id} id={course.id} user={user} navigate={navigate} />)
-                        )
+                    courseList.length <= 0 ?
+                        (<p>You haven't started a course yet</p>) : (courseList.map((course) => <CourseImage targetCourse={course} key={course.id} user={user} navigate={navigate} />))
                 }
-                <NewCourseImage user={user} id={user.CourseList.length}/>
+                <NewCourseImage user={user} id={user.CourseList.length} />
             </div>
         </div>
     )
 }
 function AccountPage() {
     const navigate = useNavigate();
+    let [courseList, setCourseList] = useState(null);
+    const user = UserManager.getLocalUser();
 
     useEffect(() => {
         document.title = 'My Account';
-    }, []);
 
-    let user = UserManager.LoginUser();
-    
-    useEffect(() => {
-        if (!user) navigate("/Home");
-    }, [user, navigate]);
+        if (!user) {
+            navigate("/login?form=signIn");
+            return;
+        }
 
-    if(!user) return;
+        const loadCourses = async () => {
+            const courses = (user && !user.isStudent) ? await CourseManager.getAllCourses() : await CourseManager.getUserCourses(user);
+            setCourseList(courses);
+        };
+
+        loadCourses();
+    }, [navigate]);
+
+    if (!user || !courseList) return;
+
     return (
         <>
             <Header />
@@ -121,7 +125,7 @@ function AccountPage() {
                     </div>
                 </form>
                 <br />
-                <CourseList user={user} navigate={navigate} />
+                <CourseList user={user} navigate={navigate} courseList={courseList} />
             </section>
             <Footer />
         </>

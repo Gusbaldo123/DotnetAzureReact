@@ -1,3 +1,4 @@
+//#region imports
 import React, { useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 
@@ -8,8 +9,46 @@ import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
 import UserManager from "../../utils/UserManager.js";
-import userManager from "../../utils/UserManager.js";
 
+export default LoginPage;
+//#endregion
+
+//#region Handlers
+function SubmitLoginForm(event, navigate) {
+  event.preventDefault();
+
+  const credentials = {
+    Email: event.target.elements.lblEmail.value.toLowerCase(),
+    Password: event.target.elements.lblPass.value
+  }
+
+  UserManager.loginUser(credentials).then(function (user) {
+    if (!user) {
+      alert("Invalid Email/Password");
+      return;
+    }
+
+    UserManager.setLocalUser(user);
+    navigate("/Home");
+  })
+}
+function SubmitSignUpForm(event, navigate) {
+  event.preventDefault();
+  const el = event.target.elements;
+  const userInfo = {
+    "Email": el.lblEmail.value,
+    "Password": el.lblPass.value,
+    "Firstname": el.lblName.value,
+    "Surname": el.lblSurname.value,
+    "Phone": el.lblPhone.value
+  };
+  const user = UserManager.CreateUser(userInfo);
+  UserManager.setLocalUser(user);
+  navigate("/Home");
+}
+//#endregion
+
+//#region JSX
 function LogInForm({ navigate }) {
   return (
     <>
@@ -30,26 +69,6 @@ function LogInForm({ navigate }) {
     </>
   );
 }
-function SubmitLoginForm(event, navigate)
-{
-  event.preventDefault();
-
-  const credentials = {
-    email: event.target.elements.lblEmail.value.toLowerCase(),
-    password: event.target.elements.lblPass.value
-  }
-
-  const user = UserManager.LoginUser(credentials);
-
-  if (!user) {
-    alert("Invalid Email/Password");
-    return;
-  }
-
-  UserManager.SetLocalUser(user);
-  navigate("/Home");
-}
-
 function SignUpForm({ navigate }) {
   return (
     <>
@@ -83,30 +102,17 @@ function SignUpForm({ navigate }) {
     </>
   );
 }
-function SubmitSignUpForm(event, navigate)
-{
-  event.preventDefault();
-  const el = event.target.elements;
-  const userInfo = {
-    "Email": el.lblEmail.value,
-    "Password": el.lblPass.value,
-    "Firstname": el.lblName.value,
-    "Surname": el.lblSurname.value,
-    "Phone": el.lblPhone.value
-  };
-  const user = UserManager.CreateUser(userInfo);
-  userManager.SetLocalUser(user);
-  navigate("/Home");
-}
-
 function LoginPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isLoginPage = searchParams.get("form") === "signIn";
 
+  const user = UserManager.getLocalUser();
   useEffect(() => {
     document.title = isLoginPage ? "Login" : "Sign In";
-  }, []);
+
+    if (user) navigate("/Account");
+  }, [navigate]);
 
   return (
     <>
@@ -122,4 +128,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+//#endregion
