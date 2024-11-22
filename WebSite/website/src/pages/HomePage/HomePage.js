@@ -50,7 +50,6 @@ function HomePage() {
     CourseList[(currentIndex + 1) % CourseList.length],
     CourseList[(currentIndex + 2) % CourseList.length],
   ];
-
   return (
     <>
       <Header />
@@ -88,8 +87,8 @@ function HomePage() {
                   className="course fade"
                   onClick={() => navigate(`/Course?courseID=${course.id}`)}
                 >
-                  <img src={course.Img} alt={`course${i}`} />
-                  <div className="courseName">{course.Title}</div>
+                  <img src={`data:image/png;base64,${course.imageBase64}`} alt={`course${i}`} />
+                  <div className="courseName">{course.title}</div>
                 </div>
               ))}
             </div>

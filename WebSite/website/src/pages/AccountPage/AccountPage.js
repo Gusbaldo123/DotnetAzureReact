@@ -37,9 +37,9 @@ function CourseImage({ targetCourse, user, navigate }) {
 
     return targetCourse ? (
         <div className="courseOption" id={`course${targetCourse.id}`} onClick={() => { navigate(`/course?courseID=${targetCourse.id}`) }}>
-            <img src={targetCourse.Img} alt="Course Image" />
+            <img src={`data:image/png;base64,${targetCourse.imageBase64}`} alt="Course Image" />
             <progress id="file" value={user.isStudent ? counterDone : targetCourse.videoList.length} max={targetCourse.videoList.length} />
-            <h4>{targetCourse.Title}</h4>
+            <h4>{targetCourse.title}</h4>
         </div>
     ) : null;
 }

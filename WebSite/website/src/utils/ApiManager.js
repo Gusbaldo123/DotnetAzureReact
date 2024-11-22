@@ -3,18 +3,17 @@ import TemporaryInfo from "./TemporaryInfo"; // TEMPORARY, redo when backend is 
 class ApiManager {
   //#region Handlers
   constructor() {
-    this.BASE_URL = 'localhost:3001';
+    this.BASE_URL = 'https://localhost:3001';
   }
 
   //#region Courses
   getAllCourses = async () => {
-    return TemporaryInfo.CourseInfo(); // Remove when backend is ready
-
-
-    const response = await fetch(`${this.BASE_URL}/selectCourses`);
+    const response = await fetch(`${this.BASE_URL}/api/Course`);
     if (!response.ok) return null;
 
-    return response.json();
+    let val = null;
+    await response.json().then((value)=>val=value);
+    return val;
   };
   getCourse = async (id)=>{
     return TemporaryInfo.CourseInfo().find((course)=>course.id==id); // Remove when backend is ready
