@@ -1,29 +1,28 @@
+using Microsoft.EntityFrameworkCore;
+using WebApiDotNet.Utils;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Adicione o serviço CORS com a política padrão
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policyBuilder =>
     {
-        policyBuilder.AllowAnyOrigin()
-                     .AllowAnyMethod()
-                     .AllowAnyHeader();
+        policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
 
-var app = builder.Build();
+// Configura o DbContext para usar o SQL Server
+builder.Services.AddDbContext<CourseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SkillhubDatabase")));
 
-// Use a política padrão de CORS
+var app = builder.Build();
 app.UseCors();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,9 +30,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

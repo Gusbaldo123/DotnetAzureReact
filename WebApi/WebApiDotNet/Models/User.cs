@@ -14,22 +14,14 @@ namespace WebApiDotNet.Classes
         private string phone;
         private List<UserCourse> courseList;
 
-        [Required]
         public int Id { get => id; set => id = value; }
-        [Required]
         [EmailAddress]
         public string Email { get => email; set => email = value; }
-        [Required]
         public string Password { get => password; set => password = value; }
-        [Required]
         public bool IsStudent { get => isStudent; set => isStudent = value; }
-        [Required]
         public string FirstName { get => firstName; set => firstName = value; }
-        [Required]
         public string Surname { get => surname; set => surname = value; }
-        [Required]
         public string Phone { get => phone; set => phone = value; }
-        [Required]
         public List<UserCourse> CourseList { get => courseList; set => courseList = value; }
     }
 
