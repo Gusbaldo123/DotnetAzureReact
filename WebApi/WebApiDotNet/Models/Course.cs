@@ -1,33 +1,39 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace WebApiDotNet.Classes
 {
     public class Course
     {
-        private int id;
-        private string title;
-        private string imageBase64;
-        private string description;
-        private List<CourseVideo> videos;
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
 
-        public int Id { get => id; set => id = value; }
-        public string Title { get => title; set => title = value; }
-        public string ImageBase64 { get => imageBase64; set => imageBase64 = value; }
-        public string Description { get => description; set => description = value; }
-        public List<CourseVideo> Videos { get => videos; set => videos = value; }
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+
+        [JsonPropertyName("imageBase64")]
+        public string ImageBase64 { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
+
+        [JsonPropertyName("videos")]
+        public List<CourseVideo> Videos { get; set; }
     }
 
     public class CourseVideo
     {
-        private int videoId;
-        private int courseId;
-        private string videoUrl;
-        private Course course;
+        [JsonPropertyName("videoId")]
+        public int VideoId { get; set; }
 
-        public int VideoId { get => videoId; set => videoId = value; }
-        public int CourseId { get => courseId; set => courseId = value; }
-        public string VideoUrl { get => videoUrl; set => videoUrl = value; }
-        public Course Course { get => course; set => course = value; }
+        [JsonPropertyName("courseId")]
+        public int CourseId { get; set; }
+
+        [JsonPropertyName("videoUrl")]
+        public string VideoUrl { get; set; }
+
+        [JsonPropertyName("course")]
+        public Course Course { get; set; }
     }
 
 }

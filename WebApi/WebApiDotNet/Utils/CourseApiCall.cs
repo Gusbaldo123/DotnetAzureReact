@@ -4,20 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApiDotNet.Utils
 {
-    public class CourseApiCall : IApiCaller
+    public class CourseApiCall : ApiCaller<Course>
     {
-        Course Course;
-        CourseContext courseContext;
-        public CourseApiCall(Course _course, CourseContext _courseContext)
-        {
-            Course = _course;
-            courseContext = _courseContext;
-        }
-        public async Task<RestResponse> SelectAll()
+        public CourseApiCall(Course? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
+        #region API Actions
+        public override async Task<RestResponse> SelectAll()
         {
             try
             {
-                var courses = await courseContext.Courses
+                var courses = await dbContext.Courses
                    .Include(c => c.Videos)
                    .Select(c => new
                    {
@@ -29,60 +24,71 @@ namespace WebApiDotNet.Utils
                    })
                    .ToListAsync();
 
-                return new RestResponse()
-                {
-                    Success = true,
-                    Data = courses
-                };
+                return GetDataResponse(courses);
             }
             catch (Exception ex)
             {
-                return new RestResponse()
-                {
-                    Success = true,
-                    Data = "Error: " + ex.Message
-                };
+                return GetErrorReponse(ex.Message);
             }
         }
-        public async Task<RestResponse> Select()
+        public override async Task<RestResponse> Select()
         {
-            return new RestResponse()
+            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+
+            try
             {
-                Success = true,
-                Data = "Error: TODO"
-            };
+                var courses = await dbContext.Courses
+                .Include(c => c.Videos)
+                .Where(c => c.Id == ObjParameter.Id)
+                .Select(c => new
+                {
+                    id = c.Id,
+                    Title = c.Title,
+                    ImageBase64 = c.ImageBase64,
+                    Description = c.Description,
+                    videoList = c.Videos.Select(v => v.VideoUrl).ToList()
+                })
+                .ToListAsync();
+
+
+                return GetDataResponse(courses);
+            }
+            catch (Exception ex)
+            {
+                return GetErrorReponse(ex.Message);
+            }
         }
-        public async Task<RestResponse> Create()
+        public override async Task<RestResponse> Create()
         {
-            return new RestResponse()
-            {
-                Success = true,
-                Data = "Error: TODO"
-            };
+            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+
+            await dbContext.Courses.AddAsync(ObjParameter);
+            await dbContext.SaveChangesAsync();
+
+            return GetDataResponse("Added Successfully");
         }
-        public async Task<RestResponse> UPDATE()
+        public override async Task<RestResponse> Update()
         {
-            return new RestResponse()
-            {
-                Success = true,
-                Data = "Error: TODO"
-            };
+            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+
+            dbContext.Courses.Update(ObjParameter);
+            await dbContext.SaveChangesAsync();
+
+            return GetDataResponse("Updated Successfully");
         }
-        public async Task<RestResponse> Delete()
+        public override async Task<RestResponse> Delete()
         {
-            return new RestResponse()
-            {
-                Success = true,
-                Data = "Error: TODO"
-            };
+            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+
+            dbContext.Courses.Remove(ObjParameter);
+            await dbContext.SaveChangesAsync();
+
+            return GetDataResponse("Removed Successfully");
         }
-        public async Task<RestResponse> None()
+        public override RestResponse None()
         {
-            return new RestResponse()
-            {
-                Success = true,
-                Data = "Error: TODO"
-            };
+            return GetErrorReponse("Action not found");
         }
+        #endregion
     }
 }

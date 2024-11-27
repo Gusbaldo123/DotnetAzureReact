@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using WebApiDotNet.Classes;
 
 namespace WebApiDotNet.Models
@@ -11,13 +13,13 @@ namespace WebApiDotNet.Models
 
     public class RestAction
     {
-        int action;
-        object? dataParam;
-        
-        public int Action { get => action; set => action = value; }
-        public object? DataParam { get => dataParam; set => dataParam = value; }
+        [Required]
+        public int Action { get; set; }
+        [Required]
+        public string Type { get; set; }
+        [Required]
+        public JsonElement DataParam { get; set; }
     }
-
     public enum ActionType
     {
         SELECT_ALL, SELECT, CREATE, UPDATE, DELETE, NONE
