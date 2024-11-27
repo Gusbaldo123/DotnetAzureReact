@@ -486,3 +486,5 @@ $RECYCLE.BIN/
 WebApi/WebApiDotNet/start.sh
 WebApi/WebApiDotNet/appsettings.Development.json
 WebApi/WebApiDotNet/appsettings.json
+WebApi/WebApiDotNet/appsettings.Development.json
+WebApi/WebApiDotNet/appsettings.json
