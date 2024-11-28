@@ -488,3 +488,4 @@ WebApi/WebApiDotNet/appsettings.Development.json
 WebApi/WebApiDotNet/appsettings.json
 WebApi/WebApiDotNet/appsettings.Development.json
 WebApi/WebApiDotNet/appsettings.json
+WebApi/WebApiDotNet/RunServer.sh
