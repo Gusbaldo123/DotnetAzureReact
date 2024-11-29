@@ -1,7 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace WebApiDotNet.Classes
+namespace WebApiDotNet.Models
 {
     public class Course
     {
@@ -17,22 +16,22 @@ namespace WebApiDotNet.Classes
         [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonPropertyName("videos")]
+        [JsonPropertyName("videoList")]
         public List<CourseVideo> Videos { get; set; }
     }
 
     public class CourseVideo
     {
-        [JsonPropertyName("videoId")]
-        public int VideoId { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
 
-        [JsonPropertyName("courseId")]
-        public int CourseId { get; set; }
+        [JsonPropertyName("fkCourseId")]
+        public int FKCourseId { get; set; }
 
-        [JsonPropertyName("videoUrl")]
-        public string VideoUrl { get; set; }
+        [JsonPropertyName("courseVideoUrl")]
+        public string CourseVideoUrl { get; set; }
 
-        [JsonPropertyName("course")]
+        [JsonIgnore]
         public Course Course { get; set; }
     }
 

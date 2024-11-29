@@ -1,7 +1,6 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApiDotNet.Classes
+namespace WebApiDotNet.Models
 {
     public class User
     {

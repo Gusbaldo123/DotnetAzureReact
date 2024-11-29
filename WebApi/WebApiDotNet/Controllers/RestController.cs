@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApiDotNet.Classes;
 using WebApiDotNet.Models;
 using WebApiDotNet.Utils;
 using System.Text.Json;
@@ -18,6 +17,11 @@ namespace WebApiDotNet.Controllers
             dbContext = _dbContext;
         }
 
+        /// <summary>
+        /// Gets the parameter data from JSON
+        /// </summary>
+        /// <param name="_action">Rest Action</param>
+        /// <returns>JSON data parameter, on a dynamic type</returns>
         private object GetRestParameter(RestAction _action)
         {
             try
@@ -26,6 +30,7 @@ namespace WebApiDotNet.Controllers
                 {
                     "course" => typeof(Course),
                     "user" => typeof(User),
+                    "video" => typeof(CourseVideo),
                     _ => null
                 };
 
@@ -50,15 +55,13 @@ namespace WebApiDotNet.Controllers
         {
             var RestParameter = GetRestParameter(action);
 
-            if (RestParameter == null)
-            {
-                return BadRequest(new RestResponse { Success = false, Data = "Invalid type or data." });
-            }
+            if (RestParameter == null) return BadRequest(new RestResponse { Success = false, Data = "Invalid type or data." });
 
             IApiCaller ApiCall = RestParameter switch
             {
                 Course course => new CourseApiCall(course, dbContext),
                 User user => new ApiCaller<User>(user, dbContext),
+                CourseVideo video => new VideoApiCall(video, dbContext),
                 _ => throw new InvalidOperationException("Unknown type")
             };
 
