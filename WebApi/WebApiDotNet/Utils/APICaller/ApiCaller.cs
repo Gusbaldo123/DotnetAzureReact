@@ -92,7 +92,7 @@ namespace WebApiDotNet.Utils
         /// <returns>Rest Response with not found</returns>
         public virtual RestResponse None()
         {
-            return GetErrorReponse("TODO");
+            return GetErrorReponse("Action not found");
         }
         #endregion
     }

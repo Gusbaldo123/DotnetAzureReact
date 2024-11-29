@@ -46,7 +46,6 @@ namespace WebApiDotNet.Controllers
                 return null;
             }
         }
-
         #endregion
 
         #region HTTP Methods
@@ -60,7 +59,7 @@ namespace WebApiDotNet.Controllers
             IApiCaller ApiCall = RestParameter switch
             {
                 Course course => new CourseApiCall(course, dbContext),
-                User user => new ApiCaller<User>(user, dbContext),
+                User user => new UserApiCall(user, dbContext),
                 CourseVideo video => new VideoApiCall(video, dbContext),
                 _ => throw new InvalidOperationException("Unknown type")
             };
