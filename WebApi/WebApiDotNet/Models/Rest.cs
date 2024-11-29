@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using WebApiDotNet.Classes;
 
 namespace WebApiDotNet.Models
 {

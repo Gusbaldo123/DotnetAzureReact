@@ -1,6 +1,5 @@
-using WebApiDotNet.Classes;
-using WebApiDotNet.Models;
 using Microsoft.EntityFrameworkCore;
+using WebApiDotNet.Models;
 
 namespace WebApiDotNet.Utils
 {
@@ -20,7 +19,7 @@ namespace WebApiDotNet.Utils
                        Title = c.Title,
                        ImageBase64 = c.ImageBase64,
                        Description = c.Description,
-                       videoList = c.Videos.Select(v => v.VideoUrl).ToList()
+                       videoList = c.Videos.Select(v => v.CourseVideoUrl).ToList()
                    })
                    .ToListAsync();
 
@@ -46,7 +45,7 @@ namespace WebApiDotNet.Utils
                     Title = c.Title,
                     ImageBase64 = c.ImageBase64,
                     Description = c.Description,
-                    videoList = c.Videos.Select(v => v.VideoUrl).ToList()
+                    videoList = c.Videos.Select(v => v.CourseVideoUrl).ToList()
                 })
                 .ToListAsync();
 
@@ -60,26 +59,63 @@ namespace WebApiDotNet.Utils
         }
         public override async Task<RestResponse> Create()
         {
-            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+            if (ObjParameter == null)
+                return GetErrorReponse("Course Parameter must not be null");
 
-            await dbContext.Courses.AddAsync(ObjParameter);
-            await dbContext.SaveChangesAsync();
+            List<CourseVideo> list = new List<CourseVideo>();
+            bool hasVideos = ObjParameter.Videos.Count > 0;
 
-            return GetDataResponse("Added Successfully");
+            if (hasVideos)
+            {
+                list = new List<CourseVideo>(ObjParameter.Videos);
+                ObjParameter.Videos.Clear();
+            }
+
+            try
+            {
+                ObjParameter.Id = default;
+                await dbContext.Courses.AddAsync(ObjParameter);
+                await dbContext.SaveChangesAsync();
+
+                if (hasVideos)
+                    foreach (CourseVideo vid in list)
+                    {
+                        vid.FKCourseId = ObjParameter.Id;
+                        vid.Course = ObjParameter;
+                        var response = await new VideoApiCall(vid, dbContext).Create();
+                        if (!response.Success)
+                            return GetErrorReponse($"Error adding video: {response.Data}");
+                    }
+
+                return GetDataResponse("Course and videos added successfully");
+            }
+            catch (Exception ex)
+            {
+                return GetErrorReponse(ex.Message);
+            }
         }
         public override async Task<RestResponse> Update()
         {
             if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+            dbContext.CourseVideos.RemoveRange(dbContext.CourseVideos.Where(cv => cv.FKCourseId == ObjParameter.Id));
 
-            dbContext.Courses.Update(ObjParameter);
-            await dbContext.SaveChangesAsync();
+            try
+            {
+                dbContext.Courses.Update(ObjParameter);
+                await dbContext.SaveChangesAsync();
 
-            return GetDataResponse("Updated Successfully");
+                return GetDataResponse("Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+                return GetErrorReponse(ex.Message);
+            }
         }
         public override async Task<RestResponse> Delete()
         {
             if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
 
+            dbContext.CourseVideos.RemoveRange(dbContext.CourseVideos.Where(cv => cv.FKCourseId == ObjParameter.Id));
             dbContext.Courses.Remove(ObjParameter);
             await dbContext.SaveChangesAsync();
 
