@@ -41,6 +41,9 @@ namespace WebApiDotNet.Utils
 
             try
             {
+                ObjParameter.Id = default;
+                if(ObjParameter.Course!=null)
+                    ObjParameter.FKCourseId = ObjParameter.Course.Id;
                 await dbContext.CourseVideos.AddAsync(ObjParameter);
                 await dbContext.SaveChangesAsync();
 
@@ -75,10 +78,6 @@ namespace WebApiDotNet.Utils
             await dbContext.SaveChangesAsync();
 
             return GetDataResponse("Removed Successfully");
-        }
-        public override RestResponse None()
-        {
-            return GetErrorReponse("Action not found");
         }
         #endregion
     }

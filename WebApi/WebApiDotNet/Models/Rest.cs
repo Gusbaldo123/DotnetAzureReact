@@ -7,17 +7,13 @@ namespace WebApiDotNet.Models
     {
         public bool Success { get; set; }
         public object Data { get; set; }
-
     }
 
     public class RestAction
     {
-        [Required]
-        public int Action { get; set; }
-        [Required]
-        public string Type { get; set; }
-        [Required]
-        public JsonElement DataParam { get; set; }
+        [Required] public int Action { get; set; }
+        [Required] public string Type { get; set; }
+        [Required] public JsonElement DataParam { get; set; }
     }
     public enum ActionType
     {
