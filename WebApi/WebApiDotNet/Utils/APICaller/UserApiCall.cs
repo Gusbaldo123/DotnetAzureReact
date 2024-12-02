@@ -17,7 +17,6 @@ namespace WebApiDotNet.Utils
                     {
                         id = u.Id,
                         email = u.Email,
-                        password = u.Password,
                         isStudent = u.IsStudent,
                         firstName = u.FirstName,
                         surname = u.Surname,
@@ -67,7 +66,6 @@ namespace WebApiDotNet.Utils
                         courseList = u.CourseList.Select(cl => new
                         {
                             id = cl.Id,
-                            fkUserId = cl.FKUserId,
                             completionList = cl.VideoList.Select(cc => cc.IsWatched)
                         })
                     })
@@ -90,6 +88,8 @@ namespace WebApiDotNet.Utils
 
             try
             {
+                ObjParameter.Id = default;
+                ObjParameter.CourseList = new List<UserCourse>();
                 await dbContext.Users.AddAsync(ObjParameter);
                 await dbContext.SaveChangesAsync();
 
@@ -107,7 +107,10 @@ namespace WebApiDotNet.Utils
 
             try
             {
-                var userToUpdate = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == ObjParameter.Id);
+                var userToUpdate = await dbContext.Users
+                    .Include(u => u.CourseList)
+                    .ThenInclude(c => c.VideoList)
+                    .FirstOrDefaultAsync(u => u.Id == ObjParameter.Id);
 
                 if (userToUpdate == null)
                     return GetErrorReponse("User not found");
@@ -119,13 +122,44 @@ namespace WebApiDotNet.Utils
                 userToUpdate.Surname = ObjParameter.Surname;
                 userToUpdate.Phone = ObjParameter.Phone;
 
+                foreach (var course in ObjParameter.CourseList)
+                {
+                    var existingCourse = userToUpdate.CourseList.FirstOrDefault(c => c.Id == course.Id);
+
+                    if (existingCourse != null)
+                    {
+                        existingCourse.VideoList.Clear();
+                        foreach (var video in course.VideoList)
+                        {
+                            existingCourse.VideoList.Add(new UserVideo
+                            {
+                                IsWatched = video.IsWatched,
+                                FKListId = existingCourse.Id
+                            });
+                        }
+                    }
+                    else
+                    {
+                        var newCourse = new UserCourse
+                        {
+                            FKUserId = userToUpdate.Id,
+                            VideoList = course.VideoList.Select(video => new UserVideo
+                            {
+                                IsWatched = video.IsWatched
+                            }).ToList()
+                        };
+                        userToUpdate.CourseList.Add(newCourse);
+                    }
+                }
+
+                // Salvar mudanças
                 await dbContext.SaveChangesAsync();
 
                 return GetDataResponse("User updated successfully");
             }
             catch (Exception ex)
             {
-                return GetErrorReponse(ex.Message);
+                return GetErrorReponse(ex.InnerException?.Message ?? ex.Message);
             }
         }
         public async override Task<RestResponse> Delete()
@@ -151,7 +185,6 @@ namespace WebApiDotNet.Utils
 
             return GetDataResponse("Removed Successfully");
         }
-
         #endregion
     }
 }

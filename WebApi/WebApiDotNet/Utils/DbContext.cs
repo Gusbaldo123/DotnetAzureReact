@@ -17,7 +17,7 @@ namespace WebApiDotNet.Utils
         {
             _modelBuilder.Entity<User>(entity =>
             {
-                entity.ToTable("Users"); // Define a tabela correspondente
+                entity.ToTable("Users");
                 entity.HasKey(u => u.Id);
                 entity.Property(u => u.Email).IsRequired().HasMaxLength(255);
                 entity.Property(u => u.Password).IsRequired().HasMaxLength(5000);
@@ -33,7 +33,7 @@ namespace WebApiDotNet.Utils
 
             _modelBuilder.Entity<UserCourse>(entity =>
             {
-                entity.ToTable("UserCourses"); // Define a tabela correspondente
+                entity.ToTable("UserCourses");
                 entity.HasKey(uc => uc.Id);
                 entity.Property(uc => uc.FKUserId).IsRequired();
                 entity.HasMany(uc => uc.VideoList)
@@ -44,7 +44,7 @@ namespace WebApiDotNet.Utils
 
             _modelBuilder.Entity<UserVideo>(entity =>
             {
-                entity.ToTable("UserVideos"); // Define a tabela correspondente
+                entity.ToTable("UserVideos");
                 entity.HasKey(uv => uv.Id);
                 entity.Property(uv => uv.IsWatched).IsRequired();
             });
