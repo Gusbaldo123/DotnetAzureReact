@@ -11,20 +11,20 @@ namespace WebApiDotNet.Models
         [JsonPropertyName("firstName")] public string FirstName { get; set; }
         [JsonPropertyName("surname")] public string Surname { get; set; }
         [JsonPropertyName("phone")] public string Phone { get; set; }
-        [JsonPropertyName("courseList")] public List<UserCourseList> CourseList { get; set; }
+        [JsonPropertyName("courseList")] public List<UserCourse> CourseList { get; set; }
     }
-    public class UserCourseList
+    public class UserCourse
     {
         [JsonPropertyName("id")] public int Id { get; set; }
         [JsonPropertyName("fkUserId")] public int FKUserId { get; set; }
-        [JsonPropertyName("completionList")] public List<UserCourseCompletion> CompletionList { get; set; }
+        [JsonPropertyName("videoList")] public List<UserVideo> VideoList { get; set; }
         [JsonIgnore] public User User { get; set; }
     }
-    public class UserCourseCompletion
+    public class UserVideo
     {
         [JsonPropertyName("id")] public int Id { get; set; }
-        [JsonPropertyName("fkCourseId")] public int FKListId { get; set; }
-        [JsonPropertyName("isComplete")] public bool IsComplete { get; set; }
-        [JsonIgnore] public UserCourseList UserCourseList { get; set; }
+        [JsonPropertyName("fkListId")] public int FKListId { get; set; }
+        [JsonPropertyName("IsWatched")] public bool IsWatched { get; set; }
+        [JsonIgnore] public UserCourse UserCourse { get; set; }
     }
 }

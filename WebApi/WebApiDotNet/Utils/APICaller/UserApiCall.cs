@@ -12,12 +12,12 @@ namespace WebApiDotNet.Utils
             try
             {
                 var users = await dbContext.Users
-                    .Include(u => u.CourseList).ThenInclude(cl => cl.CompletionList)
+                    .Include(u => u.CourseList).ThenInclude(cl => cl.VideoList)
                     .Select(u => new
                     {
                         id = u.Id,
                         email = u.Email,
-                        password = u.Password, // Remove this
+                        password = u.Password,
                         isStudent = u.IsStudent,
                         firstName = u.FirstName,
                         surname = u.Surname,
@@ -26,11 +26,11 @@ namespace WebApiDotNet.Utils
                         {
                             id = cl.Id,
                             fkUserId = cl.FKUserId,
-                            completionList = cl.CompletionList.Select(cc => new
+                            completionList = cl.VideoList.Select(cc => new
                             {
                                 id = cc.Id,
                                 fkListId = cc.FKListId,
-                                isComplete = cc.IsComplete
+                                isComplete = cc.IsWatched
                             })
                         })
                     })
@@ -54,7 +54,7 @@ namespace WebApiDotNet.Utils
             try
             {
                 var user = await dbContext.Users
-                    .Include(u => u.CourseList).ThenInclude(cl => cl.CompletionList)
+                    .Include(u => u.CourseList).ThenInclude(cl => cl.VideoList)
                     .Where(u => u.Id == ObjParameter.Id)
                     .Select(u => new
                     {
@@ -68,7 +68,7 @@ namespace WebApiDotNet.Utils
                         {
                             id = cl.Id,
                             fkUserId = cl.FKUserId,
-                            completionList = cl.CompletionList.Select(cc => cc.IsComplete)
+                            completionList = cl.VideoList.Select(cc => cc.IsWatched)
                         })
                     })
                     .FirstOrDefaultAsync();
@@ -135,16 +135,16 @@ namespace WebApiDotNet.Utils
 
             var userExists = await dbContext.Users
                 .Include(u => u.CourseList)
-                .ThenInclude(cl => cl.CompletionList)
+                .ThenInclude(cl => cl.VideoList)
                 .FirstOrDefaultAsync(u => u.Id == ObjParameter.Id);
 
             if (userExists == null)
                 return GetErrorReponse("User not found");
 
             foreach (var course in userExists.CourseList)
-                dbContext.userCourseCompletions.RemoveRange(course.CompletionList);
+                dbContext.UserVideos.RemoveRange(course.VideoList);
 
-            dbContext.userCourseLists.RemoveRange(userExists.CourseList);
+            dbContext.UserCourses.RemoveRange(userExists.CourseList);
             dbContext.Users.Remove(userExists);
 
             await dbContext.SaveChangesAsync();
