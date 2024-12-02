@@ -65,9 +65,11 @@ function CoursePage() {
   const [targetCourse, setTargetCourse] = useState(null);
   const [List, setList] = useState([]);
 
+  var Manager = CourseManager;
+
   useEffect(() => {
     const loadCourse = async () => {
-      const course = await CourseManager.getCourse(courseId);
+      const course = await Manager.getCourse(courseId);
       setTargetCourse(course);
 
       let defaultVideoList = [];

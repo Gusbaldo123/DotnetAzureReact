@@ -3,36 +3,72 @@ import TemporaryInfo from "./TemporaryInfo"; // TEMPORARY, redo when backend is 
 class ApiManager {
   //#region Handlers
   constructor() {
-    this.BASE_URL = 'https://localhost:3001';
+    this.BASE_URL = 'http://localhost:5243/api/Rest';
   }
 
   //#region Courses
   getAllCourses = async () => {
-    const response = await fetch(`${this.BASE_URL}/api/Course`);
+    const response = await fetch(this.BASE_URL, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        Action: 0,
+        Type: "course",
+        DataParam: {
+          id: 0,
+          title: "",
+          imageBase64: "",
+          description: "",
+          videoList: []
+        }
+      })
+    });
+
     if (!response.ok) return null;
 
-    let val = null;
-    await response.json().then((value)=>val=value);
-    return val;
+    const data = await response.json();
+    if(!data.success) return null;
+    return data.data;
   };
-  getCourse = async (id)=>{
-    return TemporaryInfo.CourseInfo().find((course)=>course.id==id); // Remove when backend is ready
+  getCourse = async (id) => {
+    const response = await fetch(this.BASE_URL, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        Action: 1,
+        Type: "course",
+        DataParam: {
+          id: Number(id),
+          title: "",
+          imageBase64: "",
+          description: "",
+          videoList: []
+        }
+      })
+    });
 
-
-    const response = await fetch(`${this.BASE_URL}/getCourse?id=${id}`);
     if (!response.ok) return null;
 
-    return response.json();
+    const data = await response.json();
+    if(!data.success) return null;
+
+    return data.data[0];
   }
-  getUserCourses = async (user)=>{
+  getUserCourses = async (user) => {
     const allCourses = TemporaryInfo.CourseInfo();
     const userCoursesId = user.CourseList;
     let userCourses = [];
 
-    if(!userCoursesId) return [];
+    if (!userCoursesId) return [];
     userCoursesId.forEach(userCourse => {
       allCourses.forEach(course => {
-        if(userCourse.id == course.id) userCourses.push(course);
+        if (userCourse.id == course.id) userCourses.push(course);
       });
     });
     return userCourses;
@@ -41,8 +77,8 @@ class ApiManager {
 
   //#region Users
   loginUser = async (credentials) => {
-    if(!credentials) return;
-    return TemporaryInfo.UserInfo().find((user)=>user.Email.toLowerCase() == credentials.Email.toLowerCase() && user.Password == credentials.Password);
+    if (!credentials) return;
+    return TemporaryInfo.UserInfo().find((user) => user.Email.toLowerCase() == credentials.Email.toLowerCase() && user.Password == credentials.Password);
 
 
 
@@ -55,10 +91,10 @@ class ApiManager {
 
     return response.json();
   };
-  
-  createUser = async function(data) {
+
+  createUser = async function (data) {
     return;
-    
+
     const response = await fetch(`${this.BASE_URL}/createUser`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
