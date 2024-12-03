@@ -44,13 +44,12 @@ function DeleteVideo({ courseId, id }) {
   }
 }
 //#region TODO
-function AddVideo({ courseId, id }) {
+function AddVideo({ courseId }) {
   //TODO
-  VideoManager.addVideo(courseId, id, {
-    Title: "Placeholder Title",
-    Img: require("../../assets/NewCourse.png"),
-    Description: "Placeholder Text",
-  }) 
+  VideoManager.addVideo({
+    courseVideoUrl: "TODO",
+    fkCourseId: courseId
+  })
 }
 //#endregion
 //#endregion
@@ -60,7 +59,6 @@ function CoursePage() {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("courseID");
   
-
   const [user, setUser] = useState(() => UserManager.getLocalUser());
   const [targetCourse, setTargetCourse] = useState(null);
   const [List, setList] = useState([]);
@@ -92,8 +90,9 @@ function CoursePage() {
   }, [courseId, user]);
 
   useEffect(() => {
+    console.log(targetCourse);
     if (targetCourse) {
-      document.title = targetCourse.Title;
+      document.title = targetCourse.title;
     }
   }, [targetCourse]);
 
@@ -111,12 +110,12 @@ function CoursePage() {
         <section className="courseContent">
           <article>
             <div>
-              <img src={targetCourse.Img} alt="courseImage" />
+              <img src={`data:image/jpeg;base64,${targetCourse.imageBase64}`} alt="courseImage" />
             </div>
             <div>
-              <h2>{targetCourse.Title}</h2>
+              <h2>{targetCourse.title}</h2>
               <p>Author: <a href="https://www.linkedin.com/in/gustavorbpereira/">Gustavo Pereira</a></p>
-              <p>{targetCourse.Description}</p>
+              <p>{targetCourse.description}</p>
             </div>
           </article>
           <br />
@@ -158,7 +157,7 @@ function CoursePage() {
                     <div
                       className={`courseVideo newVideo vid${targetCourse.videoList.length}`}
                       id={`vid${targetCourse.videoList.length}`}
-                      onClick={() => { AddVideo(courseId, targetCourse.videoList.length) }}
+                      onClick={() => { AddVideo(courseId) }}
                     >
                       <p className={`lblVideo txtVid${targetCourse.videoList.length}`} id={`txtVid${targetCourse.videoList.length}`}>
                         <b>Add new video</b>

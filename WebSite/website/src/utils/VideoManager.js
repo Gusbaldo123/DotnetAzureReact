@@ -1,3 +1,5 @@
+import ApiManager from "./ApiManager";
+
 class VideoManager{
     //#region Handlers
     constructor()
@@ -8,11 +10,11 @@ class VideoManager{
         VideoManager.instance = this;
     }
     //#region TODO
-    addVideo(courseId) {
-        //TODO
+    addVideo(video) {
+        return ApiManager.addVideo(video);
     }
     deleteVideo(courseId, videoId) {
-        //TODO
+        return ApiManager.deleteVideo(courseId, videoId);
     }
     //#endregion
     //#endregion

@@ -22,8 +22,12 @@ function UpdateAccount(e, navigate) {
 }
 //#region TODO
 function AddCourse() {
-    //Todo Backend
-    console.log("Todo");
+    CourseManager.addCourse({
+        title: "TODO",
+        imageBase64: "TODO",
+        description: "TODO",
+        videoList: []
+    });
 }
 //#endregion
 //#endregion
