@@ -3,9 +3,9 @@ using WebApiDotNet.Models;
 
 namespace WebApiDotNet.Utils
 {
-    public class CourseApiCall : ApiCaller<Course>
+    public class CourseService : CrudApiService<Course>
     {
-        public CourseApiCall(Course? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
+        public CourseService(Course? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
 
         #region API Actions
         public override async Task<RestResponse> SelectAll()
@@ -20,7 +20,11 @@ namespace WebApiDotNet.Utils
                         Title = c.Title,
                         ImageBase64 = c.ImageBase64,
                         Description = c.Description,
-                        videoList = c.Videos.Select(v => v.CourseVideoUrl).ToList()
+                        videoList = c.Videos
+                        .Select(v => new {
+                            VideoUrl = v.VideoUrl,
+                            VideoTitle = v.VideoTitle
+                        }).ToList()
                     })
                     .ToListAsync();
 
@@ -37,7 +41,7 @@ namespace WebApiDotNet.Utils
 
             try
             {
-                var courses = await dbContext.Courses
+                var course = await dbContext.Courses
                     .Include(c => c.Videos)
                     .Where(c => c.Id == ObjParameter.Id)
                     .Select(c => new
@@ -46,11 +50,18 @@ namespace WebApiDotNet.Utils
                         Title = c.Title,
                         ImageBase64 = c.ImageBase64,
                         Description = c.Description,
-                        videoList = c.Videos.Select(v => v.CourseVideoUrl).ToList()
+                        videoList = c.Videos
+                        .Select(v => new {
+                            VideoUrl = v.VideoUrl,
+                            VideoTitle = v.VideoTitle
+                        }).ToList()
                     })
-                    .ToListAsync();
+                    .FirstOrDefaultAsync();
+                
+                if (course == null)
+                    return GetErrorReponse("Course not found");
 
-                return GetDataResponse(courses);
+                return GetDataResponse(course);
             }
             catch (Exception ex)
             {
@@ -84,7 +95,7 @@ namespace WebApiDotNet.Utils
                         vid.Id = default;
                         vid.FKCourseId = ObjParameter.Id;
                         vid.Course = ObjParameter;
-                        var response = await new VideoApiCall(vid, dbContext).Create();
+                        var response = await new VideoService(vid, dbContext).Create();
                         if (!response.Success)
                             return GetErrorReponse($"Error adding video: {response.Data}");
                     }
@@ -112,7 +123,7 @@ namespace WebApiDotNet.Utils
                     if (video.Id == 0)
                     {
                         video.FKCourseId = ObjParameter.Id;
-                        var videoApiCall = new VideoApiCall(video, dbContext);
+                        var videoApiCall = new VideoService(video, dbContext);
                         var response = await videoApiCall.Create();
                         if (!response.Success) return GetErrorReponse($"Error adding video: {response.Data}");
                     }
@@ -121,15 +132,16 @@ namespace WebApiDotNet.Utils
                         var existingVideo = existingVideos.FirstOrDefault(ev => ev.Id == video.Id);
                         if (existingVideo != null)
                         {
-                            existingVideo.CourseVideoUrl = video.CourseVideoUrl;
-                            var videoApiCall = new VideoApiCall(existingVideo, dbContext);
+                            existingVideo.VideoUrl= video.VideoUrl;
+                            existingVideo.VideoTitle= video.VideoTitle;
+                            var videoApiCall = new VideoService(existingVideo, dbContext);
                             var response = await videoApiCall.Update();
                             if (!response.Success) return GetErrorReponse($"Error updating video: {response.Data}");
                         }
                         else
                         {
                             video.FKCourseId = ObjParameter.Id;
-                            var videoApiCall = new VideoApiCall(video, dbContext);
+                            var videoApiCall = new VideoService(video, dbContext);
                             var response = await videoApiCall.Create();
                             if (!response.Success) return GetErrorReponse($"Error adding new video with ID {video.Id}: {response.Data}");
                         }
@@ -165,7 +177,7 @@ namespace WebApiDotNet.Utils
 
                 foreach (var video in videosToDelete)
                 {
-                    var videoApiCall = new VideoApiCall(video, dbContext);
+                    var videoApiCall = new VideoService(video, dbContext);
                     var videoDeleteResponse = await videoApiCall.Delete();
                     if (!videoDeleteResponse.Success)
                     {

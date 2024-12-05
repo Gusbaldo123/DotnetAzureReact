@@ -3,10 +3,34 @@ using WebApiDotNet.Models;
 
 namespace WebApiDotNet.Utils
 {
-    public class VideoApiCall : ApiCaller<CourseVideo>
+    public class VideoService : CrudApiService<CourseVideo>
     {
-        public VideoApiCall(CourseVideo? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
+        public VideoService(CourseVideo? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
         #region API Actions
+        public override async Task<RestResponse> SelectAll()
+        {
+            if (ObjParameter == null) return GetErrorReponse("Video Parameter must not be null");
+
+            try
+            {
+                var courses = await dbContext.CourseVideos
+                .Select(c => new
+                {
+                    id = c.Id,
+                    VideoUrl = c.VideoUrl,
+                    VideoTitle = c.VideoTitle,
+                    FKCourseId = c.FKCourseId
+                })
+                .ToListAsync();
+
+
+                return GetDataResponse(courses);
+            }
+            catch (Exception ex)
+            {
+                return GetErrorReponse(ex.Message);
+            }
+        }
         public override async Task<RestResponse> Select()
         {
             if (ObjParameter == null) return GetErrorReponse("Video Parameter must not be null");
@@ -18,11 +42,14 @@ namespace WebApiDotNet.Utils
                 .Select(c => new
                 {
                     id = c.Id,
-                    CourseVideoUrl = c.CourseVideoUrl,
+                    VideoUrl = c.VideoUrl,
+                    VideoTitle = c.VideoTitle,
                     FKCourseId = c.FKCourseId
                 })
-                .ToListAsync();
+                .FirstOrDefaultAsync();
 
+                if (courses == null)
+                    return GetErrorReponse("Video not found");
 
                 return GetDataResponse(courses);
             }
@@ -36,8 +63,8 @@ namespace WebApiDotNet.Utils
             if (ObjParameter == null)
                 return GetErrorReponse("Video Parameter must not be null");
 
-            if (string.IsNullOrEmpty(ObjParameter.CourseVideoUrl))
-                return GetErrorReponse("Video URL must not be null or empty");
+            if (string.IsNullOrEmpty(ObjParameter.VideoUrl)||string.IsNullOrEmpty(ObjParameter.VideoTitle))
+                return GetErrorReponse("Video URL and Title must not be null or empty");
 
             try
             {

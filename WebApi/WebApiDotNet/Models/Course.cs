@@ -14,7 +14,8 @@ namespace WebApiDotNet.Models
     {
         [JsonPropertyName("id")] public int Id { get; set; }
         [JsonPropertyName("fkCourseId")] public int FKCourseId { get; set; }
-        [JsonPropertyName("courseVideoUrl")] public string CourseVideoUrl { get; set; }
+        [JsonPropertyName("videoUrl")] public string VideoUrl { get; set; }
+        [JsonPropertyName("videoTitle")] public string VideoTitle { get; set; }
         [JsonIgnore] public Course Course { get; set; }
     }
 }

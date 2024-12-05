@@ -3,9 +3,9 @@ using WebApiDotNet.Models;
 
 namespace WebApiDotNet.Utils
 {
-    class UserApiCall : ApiCaller<User>
+    class UserService : CrudApiService<User>
     {
-        public UserApiCall(User? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
+        public UserService(User? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
         #region API Actions
         public async override Task<RestResponse> SelectAll()
         {

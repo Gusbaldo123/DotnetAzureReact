@@ -26,9 +26,11 @@ namespace WebApiDotNet.Utils
             _modelBuilder.Entity<CourseVideo>(entity =>
             {
                 entity.HasKey(cv => cv.Id);
-                entity.Property(cv => cv.CourseVideoUrl).IsRequired().HasMaxLength(500);
+                entity.Property(cv => cv.VideoUrl).IsRequired().HasMaxLength(255);
+                entity.Property(cv => cv.VideoTitle).IsRequired().HasMaxLength(255);
                 entity.HasOne(cv => cv.Course).WithMany(c => c.Videos).HasForeignKey(cv => cv.FKCourseId).OnDelete(DeleteBehavior.Cascade);
             });
+            
             _modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("Users");
@@ -44,7 +46,6 @@ namespace WebApiDotNet.Utils
                       .HasForeignKey(uc => uc.FKUserId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
-
             _modelBuilder.Entity<UserCourse>(entity =>
             {
                 entity.ToTable("UserCourses");
@@ -55,7 +56,6 @@ namespace WebApiDotNet.Utils
                       .HasForeignKey(uv => uv.FKListId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
-
             _modelBuilder.Entity<UserVideo>(entity =>
             {
                 entity.ToTable("UserVideos");
@@ -65,7 +65,6 @@ namespace WebApiDotNet.Utils
 
             base.OnModelCreating(_modelBuilder);
         }
-
         #endregion
     }
 }

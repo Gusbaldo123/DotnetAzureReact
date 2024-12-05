@@ -2,7 +2,7 @@ using WebApiDotNet.Models;
 
 namespace WebApiDotNet.Utils
 {
-    public interface IApiCaller
+    public interface ICrudApiService
     {
         #region Handlers
         public Task<RestResponse> SelectAll();
