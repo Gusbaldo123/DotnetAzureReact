@@ -78,7 +78,7 @@ function CoursePage() {
 
       if (user && !user.courseList.find(course => course.id == courseId)) {
         const newUser = { ...user };
-        newUser.CourseList.push({
+        newUser.courseList.push({
           id: courseId,
           videoList: defaultVideoList,
         });
@@ -143,7 +143,7 @@ function CoursePage() {
                     }}
                   >
                     <p className={`lblVideo txtVid${i}`} id={`txtVid${i}`}>
-                      <b>{`Video ${i + 1}`}</b>
+                      <b>{`Video ${i + 1} - ${video.videoTitle}`}</b>
                     </p>
                   </div>
                   {user && !isStudent ? <button className="btDelete" onClick={() => { DeleteVideo(courseId, i) }}>Del</button> : null}
