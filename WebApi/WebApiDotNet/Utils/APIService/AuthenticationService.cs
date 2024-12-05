@@ -25,6 +25,11 @@ namespace WebApiDotNet.Utils
                         firstName = u.FirstName,
                         surname = u.Surname,
                         phone = u.Phone,
+                        courseList = u.CourseList.Select(cl => new
+                        {
+                            id = cl.Id,
+                            completionList = cl.VideoList.Select(cc => cc.IsWatched)
+                        })
                     }).FirstOrDefaultAsync();
                 if (user == null)
                     return GetErrorReponse("Password or Email incorrect");
