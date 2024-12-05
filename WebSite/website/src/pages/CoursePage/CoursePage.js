@@ -63,7 +63,7 @@ function CoursePage() {
   const [targetCourse, setTargetCourse] = useState(null);
   const [List, setList] = useState([]);
 
-  var Manager = CourseManager;
+  var Manager = CourseManager; // avoid useEffect missreference
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -73,10 +73,10 @@ function CoursePage() {
       let defaultVideoList = [];
       course.videoList.forEach(() => defaultVideoList.push(false));
 
-      const userCourseInfo = user?.CourseList?.find(course => course.id == courseId);
+      const userCourseInfo = user?.courseList?.find(course => course.id == courseId);
       setList(userCourseInfo ? userCourseInfo.videoList : defaultVideoList);
 
-      if (user && !user.CourseList.find(course => course.id == courseId)) {
+      if (user && !user.courseList.find(course => course.id == courseId)) {
         const newUser = { ...user };
         newUser.CourseList.push({
           id: courseId,

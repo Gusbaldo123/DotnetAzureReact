@@ -34,7 +34,7 @@ function AddCourse() {
 
 //#region JSX
 function CourseImage({ targetCourse, user, navigate }) {
-    const userTargetCourse = user.CourseList.find((courseArg) => courseArg.id == targetCourse.id);
+    const userTargetCourse = user.courseList.find((courseArg) => courseArg.id == targetCourse.id);
     let counterDone = 0;
 
     if (user.isStudent) userTargetCourse.videoList.forEach((vid) => { if (vid) counterDone++; });
@@ -66,7 +66,7 @@ function CourseList({ user, navigate, courseList }) {
                     courseList.length <= 0 ?
                         (<p>You haven't started a course yet</p>) : (courseList.map((course) => <CourseImage targetCourse={course} key={course.id} user={user} navigate={navigate} />))
                 }
-                <NewCourseImage user={user} id={user.CourseList.length} />
+                <NewCourseImage user={user} id={user.courseList.length} />
             </div>
         </div>
     )
@@ -100,28 +100,28 @@ function AccountPage() {
             <Banner />
             <section className="accountContent">
                 <form action="post" className="formAccount" onSubmit={(e) => { UpdateAccount(e, navigate) }} onChange={() => { }}>
-                    <h2>{user.isStudent ? `${user.Firstname}'s Account` : `Mr./Ms ${user.Surname}'s Account`}</h2>
+                    <h2>{user.isStudent ? `${user.firstName}'s Account` : `Mr./Ms ${user.surname}'s Account`}</h2>
                     <div>
                         <label htmlFor="lblEmail">Email</label>
-                        <input type="text" name="lblEmail" id="lblEmail" className="lblEmail" readOnly disabled value={user.Email} required onChange={() => { }} />
+                        <input type="text" name="lblEmail" id="lblEmail" className="lblEmail" readOnly disabled value={user.email} required onChange={() => { }} />
                     </div>
                     <div>
                         <label htmlFor="lblPass">Password</label>
-                        <input type="password" name="lblPass" id="lblPass" className="lblPass" value={user.Password} required onChange={() => { }} />
+                        <input type="password" name="lblPass" id="lblPass" className="lblPass" value={user.password} required onChange={() => { }} />
                     </div>
                     <hr />
                     <h3>Informations</h3>
                     <div>
                         <label htmlFor="lblName">First Name</label>
-                        <input type="text" name="lblName" id="lblName" className="lblName" value={user.Firstname} required onChange={() => { }} />
+                        <input type="text" name="lblName" id="lblName" className="lblName" value={user.firstName} required onChange={() => { }} />
                     </div>
                     <div>
                         <label htmlFor="lblSurname">Surname</label>
-                        <input type="text" name="lblSurname" id="lblSurname" className="lblSurname" value={user.Surname} required onChange={() => { }} />
+                        <input type="text" name="lblSurname" id="lblSurname" className="lblSurname" value={user.surname} required onChange={() => { }} />
                     </div>
                     <div>
                         <label htmlFor="lblPhone">Phone</label>
-                        <input type="text" name="lblPhone" id="lblPhone" className="lblPhone" value={user.Phone} required onChange={() => { }} />
+                        <input type="text" name="lblPhone" id="lblPhone" className="lblPhone" value={user.phone} required onChange={() => { }} />
                     </div>
                     <div className="btOptions">
                         <button type="submit" className="btUpdate" >Update Account</button>

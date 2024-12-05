@@ -15,12 +15,17 @@ class UserManager {
         }
         UserManager.instance = this;
     }
-    loginUser(credentials) {
+    async loginUser(credentials) {
         if(!credentials)return null;
-        return ApiManager.loginUser(credentials);
+        const response = await ApiManager.loginUser(credentials);
+        if(response.success)
+            this.setLocalUser(response.data);
+        return response;
     }
     createUser(data) {
-        return ApiManager.createUser(data);
+        const result = ApiManager.createUser(data);
+        if(result.success)
+            this.loginUser(data);
     }
     getLocalUser() {
         try {

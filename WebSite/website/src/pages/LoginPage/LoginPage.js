@@ -18,17 +18,15 @@ function SubmitLoginForm(event, navigate) {
   event.preventDefault();
 
   const credentials = {
-    Email: event.target.elements.lblEmail.value.toLowerCase(),
-    Password: event.target.elements.lblPass.value
+    email: event.target.elements.lblEmail.value.toLowerCase(),
+    password: event.target.elements.lblPass.value
   }
 
-  UserManager.loginUser(credentials).then(function (user) {
-    if (!user) {
-      alert("Invalid Email/Password");
+  UserManager.loginUser(credentials).then(function (response) {
+    if (!response.success) {
+      alert(response.data);
       return;
     }
-
-    UserManager.setLocalUser(user);
     navigate("/Home");
   })
 }
@@ -36,14 +34,14 @@ function SubmitSignUpForm(event, navigate) {
   event.preventDefault();
   const el = event.target.elements;
   const userInfo = {
-    "Email": el.lblEmail.value,
-    "Password": el.lblPass.value,
-    "Firstname": el.lblName.value,
-    "Surname": el.lblSurname.value,
-    "Phone": el.lblPhone.value
+    "email": el.lblEmail.value,
+    "password": el.lblPass.value,
+    "isStudent": true,
+    "firstName": el.lblName.value,
+    "surname": el.lblSurname.value,
+    "phone": el.lblPhone.value
   };
-  const user = UserManager.CreateUser(userInfo);
-  UserManager.setLocalUser(user);
+  UserManager.createUser(userInfo);
   navigate("/Home");
 }
 //#endregion

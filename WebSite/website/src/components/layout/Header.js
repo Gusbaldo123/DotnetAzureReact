@@ -28,7 +28,7 @@ function Header() {
       </div>
       : // if logged, return account/logoff buttons
       <div className="navHeaderButtons">
-        <Link className="btUser" to={{ pathname: "/Account" }}>{user.Firstname}</Link>
+        <Link className="btUser" to={{ pathname: "/Account" }}>{user.firstName}</Link>
         <button className="btLogOff" onClick={() => LogoffClickHandler(navigate,SetUser)}>LogOff</button>
       </div>
   }

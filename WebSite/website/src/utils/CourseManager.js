@@ -21,8 +21,7 @@ class CourseManager {
     getCourse(id) {
         return ApiManager.getCourse(id);
     }
-    addCourse(course)
-    {
+    addCourse(course){
         return ApiManager.addCourse(course);
     }
     //#endregion

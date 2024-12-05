@@ -51,7 +51,7 @@ class ApiManager {
     const data = await response.json();
     if (!data.success) return null;
 
-    return data.data[0];
+    return data.data;
   }
   addCourse = async (course) => {
 
@@ -59,44 +59,40 @@ class ApiManager {
   //#endregion
 
   //#region Videos
-  addVideo = async(video) => {
+  addVideo = async (video) => {
     //TODO
   }
-  deleteVideo = async(courseId, id) => {
+  deleteVideo = async (courseId, id) => {
     //TODO
   }
   //#endregion
   //#region Users
-  loginUser = async (credentials) => {
-    if (!credentials) return;
-    return TemporaryInfo.UserInfo().find((user) => user.Email.toLowerCase() == credentials.Email.toLowerCase() && user.Password == credentials.Password);
-
-
-
-    const response = await fetch(`${this.BASE_URL}/loginUser`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
+  loginUser = async (dataParam) => {
+    if (!dataParam) return;
+    const response = await this.fetchAPI({
+      Action: 6,
+      Type: "auth",
+      DataParam: dataParam
     });
     if (!response.ok) return null;
-
-    return response.json();
+    const data = await response.json();
+    if (!data.success) return null;
+    return data;
   };
-  createUser = async function (data) {
-    return;
-
-    const response = await fetch(`${this.BASE_URL}/createUser`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+  createUser = async function (dataParam) {
+    const response = await this.fetchAPI({
+      Action: 2,
+      Type: "user",
+      DataParam: dataParam
     });
     if (!response.ok) return null;
-
-    return response.json();
+    const data = await response.json();
+    if (!data.success) return null;
+    return data.data;
   }
   getUserCourses = async (user) => {
     const allCourses = TemporaryInfo.CourseInfo();
-    const userCoursesId = user.CourseList;
+    const userCoursesId = user.courseList;
     let userCourses = [];
 
     if (!userCoursesId) return [];
