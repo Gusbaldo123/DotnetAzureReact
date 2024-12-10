@@ -3,7 +3,7 @@ using WebApiDotNet.Models;
 
 namespace WebApiDotNet.Utils
 {
-    class UserService : CrudApiService<User>
+    public class UserService : CrudApiService<User>
     {
         public UserService(User? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
         #region API Actions

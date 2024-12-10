@@ -9,15 +9,13 @@ namespace WebApiDotNet.Models
         public object? Data { get; set; }
     }
 
-    public class RestAction
+    public class CRUDAction
     {
         [Required] public int Action { get; set; }
-        [Required] public string? Type { get; set; }
-        [Required] public JsonElement DataParam { get; set; }
+        [Required] public JsonElement? DataParam { get; set; }
     }
-    public enum ActionType
+    public enum CRUDActionType
     {
-        SELECT_ALL, SELECT, CREATE, UPDATE, DELETE, NONE
-        ,LOGIN // TODO Backend, remove this line
+        SELECT_ALL, SELECT, CREATE, UPDATE, DELETE
     }
 }
