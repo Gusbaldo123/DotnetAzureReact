@@ -1,38 +1,25 @@
 //#region imports
-import ApiManager from "./ApiManager.js";
+import CRUDManager from "./CRUDManager.js";
 //#endregion
 
-class UserManager {
+class UserManager extends CRUDManager {
     //#region Handlers
     constructor() {
-        if (UserManager.instance) {
+        super("/user");
+        if (UserManager.instance)
             return UserManager.instance;
-        }
-        try {
-            this.localUser= JSON.parse(localStorage.getItem("localUser")) || null;
-        } catch {
-            this.localUser= null;
-        }
         UserManager.instance = this;
+        this.loadLocalUser();
     }
-    async loginUser(credentials) {
-        if(!credentials)return null;
-        const response = await ApiManager.loginUser(credentials);
-        if(response.success)
-            this.setLocalUser(response.data);
-        return response;
-    }
-    createUser(data) {
-        const result = ApiManager.createUser(data);
-        if(result.success)
-            this.loginUser(data);
+    loadLocalUser() {
+        try {
+            this.localUser = JSON.parse(localStorage.getItem("localUser")) || null;
+        } catch {
+            this.localUser = null;
+        }
     }
     getLocalUser() {
-        try {
-            this.localUser= JSON.parse(localStorage.getItem("localUser")) || null;
-        } catch {
-            this.localUser= null;
-        }
+        this.loadLocalUser();
         return this.localUser;
     }
     setLocalUser(newUser) {
@@ -43,7 +30,6 @@ class UserManager {
 }
 
 //#region exports
-
 const userManager = new UserManager();
 export default userManager;
 //#endregion

@@ -1,22 +1,12 @@
-import ApiManager from "./ApiManager";
+//#region imports
+import CRUDManager from "./CRUDManager.js";
+//#endregion
 
-class VideoManager{
+class VideoManager extends CRUDManager {
     //#region Handlers
-    constructor()
-    {
-        if(VideoManager.instance)
-            return VideoManager.instance;
-
-        VideoManager.instance = this;
+    constructor() {
+        super("/video");
     }
-    //#region TODO
-    addVideo(video) {
-        return ApiManager.addVideo(video);
-    }
-    deleteVideo(courseId, videoId) {
-        return ApiManager.deleteVideo(courseId, videoId);
-    }
-    //#endregion
     //#endregion
 }
 

@@ -23,6 +23,7 @@ function UpdateAccount(e, navigate) {
 //#region TODO
 function AddCourse() {
     CourseManager.addCourse({
+        id: 0,
         title: "TODO",
         imageBase64: "TODO",
         description: "TODO",
@@ -85,8 +86,16 @@ function AccountPage() {
         }
 
         const loadCourses = async () => {
-            const courses = (user && !user.isStudent) ? await CourseManager.getAllCourses() : await CourseManager.getUserCourses(user);
-            setCourseList(courses);
+            var res;
+            if (user && !user.isStudent)
+                res = await CourseManager.getAll();
+            else {
+                const idList = [];
+                user.courseList.forEach(course => idList.push(course.id));
+                res = await CourseManager.getUserCourses(idList);
+            }
+            if (!res) return;
+            setCourseList(res.data);
         };
 
         loadCourses();

@@ -40,13 +40,13 @@ function SetCourse(List, user, targetCourse, setUser) {
 
 function DeleteVideo({ courseId, id }) {
   if (window.confirm("Delete this video?")) {
-    VideoManager.deleteVideo(courseId, id);
+    VideoManager.delete(courseId, id);
   }
 }
 //#region TODO
 function AddVideo({ courseId }) {
   //TODO
-  VideoManager.addVideo({
+  VideoManager.add({
     courseVideoUrl: "TODO",
     fkCourseId: courseId
   })
@@ -63,15 +63,14 @@ function CoursePage() {
   const [targetCourse, setTargetCourse] = useState(null);
   const [List, setList] = useState([]);
 
-  var Manager = CourseManager; // avoid useEffect missreference
-
   useEffect(() => {
     const loadCourse = async () => {
-      const course = await Manager.getCourse(courseId);
-      setTargetCourse(course);
+      const res = await CourseManager.get(courseId);
+      if(!res) return;
+      setTargetCourse(res.data);
 
       let defaultVideoList = [];
-      course.videoList.forEach(() => defaultVideoList.push(false));
+      res.videoList.forEach(() => defaultVideoList.push(false));
 
       const userCourseInfo = user?.courseList?.find(course => course.id == courseId);
       setList(userCourseInfo ? userCourseInfo.videoList : defaultVideoList);
@@ -90,7 +89,6 @@ function CoursePage() {
   }, [courseId, user]);
 
   useEffect(() => {
-    console.log(targetCourse);
     if (targetCourse) {
       document.title = targetCourse.title;
     }

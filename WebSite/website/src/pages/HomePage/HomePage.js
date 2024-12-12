@@ -34,15 +34,16 @@ function HomePage() {
     document.title = "Skillhub";
 
     const loadCourses = async () => {
-      const courses = await CourseManager.getAllCourses(); 
-      setCourseList(courses);
+      const res = await CourseManager.getAll();
+      if(!res) return;
+      setCourseList(res.data);
     };
 
     loadCourses();
-  }, []); 
+  }, []);
 
   if (!CourseList) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   const visibleItems = [
@@ -68,15 +69,13 @@ function HomePage() {
           <div className="contentCourseCaroussel">
             <button
               onClick={() => PreviousCourse(setCurrentIndex, CourseList)}
-              className="contentCoursePrevious btCourses"
-            >
+              className="contentCoursePrevious btCourses">
               <svg
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-              >
+                fill="currentColor">
                 <path d="M8 4l8 8-8 8" />
               </svg>
             </button>
@@ -85,8 +84,7 @@ function HomePage() {
                 <div
                   key={i}
                   className="course fade"
-                  onClick={() => navigate(`/Course?courseID=${course.id}`)}
-                >
+                  onClick={() => navigate(`/Course?courseID=${course.id}`)}>
                   <img src={`data:image/png;base64,${course.imageBase64}`} alt={`course${i}`} />
                   <div className="courseName">{course.title}</div>
                 </div>
@@ -94,15 +92,13 @@ function HomePage() {
             </div>
             <button
               onClick={() => NextCourse(setCurrentIndex, CourseList)}
-              className="contentCourseNext btCourses"
-            >
+              className="contentCourseNext btCourses">
               <svg
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-              >
+                fill="currentColor">
                 <path d="M8 4l8 8-8 8" />
               </svg>
             </button>

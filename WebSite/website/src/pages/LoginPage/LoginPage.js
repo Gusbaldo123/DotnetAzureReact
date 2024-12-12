@@ -9,12 +9,14 @@ import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
 import UserManager from "../../utils/UserManager.js";
+import AuthManager from "../../utils/AuthManager.js"
+import userManager from "../../utils/UserManager.js";
 
 export default LoginPage;
 //#endregion
 
 //#region Handlers
-function SubmitLoginForm(event, navigate) {
+async function SubmitLoginForm(event, navigate) {
   event.preventDefault();
 
   const credentials = {
@@ -22,27 +24,28 @@ function SubmitLoginForm(event, navigate) {
     password: event.target.elements.lblPass.value
   }
 
-  UserManager.loginUser(credentials).then(function (response) {
-    if (!response.success) {
-      alert(response.data);
-      return;
-    }
+  await AuthManager.authenticate(credentials);
+  if(userManager.getLocalUser())
+  {
     navigate("/Home");
-  })
+  }
 }
-function SubmitSignUpForm(event, navigate) {
+async function SubmitSignUpForm(event, navigate) {
   event.preventDefault();
   const el = event.target.elements;
-  const userInfo = {
-    "email": el.lblEmail.value,
-    "password": el.lblPass.value,
-    "isStudent": true,
-    "firstName": el.lblName.value,
-    "surname": el.lblSurname.value,
-    "phone": el.lblPhone.value
-  };
-  UserManager.createUser(userInfo);
-  navigate("/Home");
+  await UserManager.add({
+    email: el.lblEmail.value.toLowerCase(),
+    password: el.lblPass.value,
+    isStudent: true,
+    firstName: el.lblName.value,
+    surname: el.lblSurname.value,
+    phone: el.lblPhone.value
+  });
+  await AuthManager.authenticate({email: el.lblEmail.value.toLowerCase(), password: el.lblPass.value});
+  if(userManager.getLocalUser())
+    {
+      navigate("/Home");
+    }
 }
 //#endregion
 

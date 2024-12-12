@@ -1,34 +1,17 @@
 //#region imports
 import ApiManager from "./ApiManager.js";
+import CRUDManager from "./CRUDManager.js";
 //#endregion
 
-class CourseManager {
-    //#region Handlers
+class CourseManager extends CRUDManager {
     constructor() {
-        if (CourseManager.instance)
-            return CourseManager.instance;
-
-        this.listeners = new Set();
-
-        CourseManager.instance = this;
+        super("/course");
     }
-    getAllCourses() {
-        return ApiManager.getAllCourses();
-    }
-    getUserCourses(user) {
-        return ApiManager.getUserCourses(user);
-    }
-    getCourse(id) {
-        return ApiManager.getCourse(id);
-    }
-    addCourse(course){
-        return ApiManager.addCourse(course);
-    }
-    //#endregion
+    getUserCourses = async (data) => 
+        await this.getDataFromJSON(await ApiManager.fetchAPI(this.baseURL, data))
 }
 
 //#region exports
-
 const courseManager = new CourseManager();
 export default courseManager;
 //#endregion
