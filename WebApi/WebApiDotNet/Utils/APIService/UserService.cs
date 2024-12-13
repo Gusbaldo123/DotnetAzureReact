@@ -6,7 +6,55 @@ namespace WebApiDotNet.Utils
     public class UserService : CrudApiService<User>
     {
         public UserService(User? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
-        #region API Actions
+        #region Handlers
+        public override bool isDataFilled(User? _user) =>
+        _user != null &&
+        !string.IsNullOrEmpty(_user.Email) &&
+        !string.IsNullOrEmpty(_user.Password) &&
+        _user.IsStudent != null &&
+        !string.IsNullOrEmpty(_user.FirstName) &&
+        !string.IsNullOrEmpty(_user.Surname) &&
+        !string.IsNullOrEmpty(_user.Phone) &&
+        _user.CourseList != null;
+        #region CRUD Actions
+        public override async Task<RestResponse> SelectByIdList(int[] _idList)
+        {
+            List<int> idList = _idList.ToList();
+            if (idList.Count <= 0) return GetErrorReponse("Id list must not be empty");
+            try
+            {
+                var users = await dbContext.Users
+                    .Include(u => u.CourseList).ThenInclude(cl => cl.VideoList)
+                    .Select(u => new
+                    {
+                        id = u.Id,
+                        email = u.Email,
+                        isStudent = u.IsStudent,
+                        firstName = u.FirstName,
+                        surname = u.Surname,
+                        phone = u.Phone,
+                        courseList = u.CourseList.Select(cl => new
+                        {
+                            id = cl.Id,
+                            fkUserId = cl.FKUserId,
+                            completionList = cl.VideoList.Select(cc => new
+                            {
+                                id = cc.Id,
+                                fkListId = cc.FKListId,
+                                isComplete = cc.IsWatched
+                            })
+                        })
+                    })
+                    .Where(u => u.id != null && idList.Contains((int)u.id))
+                    .ToListAsync();
+
+                return GetDataResponse(users);
+            }
+            catch (Exception ex)
+            {
+                return GetErrorReponse(ex.Message);
+            }
+        }
         public async override Task<RestResponse> SelectAll()
         {
             try
@@ -44,11 +92,8 @@ namespace WebApiDotNet.Utils
         }
         public async override Task<RestResponse> Select()
         {
-            if (ObjParameter == null)
-                return GetErrorReponse("User Parameter must not be null");
-
-            if (ObjParameter.Id <= 0)
-                return GetErrorReponse("Invalid User ID");
+            if (ObjParameter == null) return GetErrorReponse("Parameter must not be null");
+            if (ObjParameter.Id == null) return GetErrorReponse("Id must not be null");
 
             try
             {
@@ -83,8 +128,8 @@ namespace WebApiDotNet.Utils
         }
         public async override Task<RestResponse> Create()
         {
-            if (ObjParameter == null)
-                return GetErrorReponse("User Parameter must not be null");
+            if (!isDataFilled(ObjParameter))
+                return GetErrorReponse("Parameter not entirely filled");
 
             try
             {
@@ -102,8 +147,8 @@ namespace WebApiDotNet.Utils
         }
         public async override Task<RestResponse> Update()
         {
-            if (ObjParameter == null)
-                return GetErrorReponse("User Parameter must not be null");
+            if (!isDataFilled(ObjParameter))
+                return GetErrorReponse("Parameter not entirely filled");
 
             try
             {
@@ -164,8 +209,8 @@ namespace WebApiDotNet.Utils
         }
         public async override Task<RestResponse> Delete()
         {
-            if (ObjParameter == null)
-                return GetErrorReponse("User Parameter must not be null");
+            if (ObjParameter == null) return GetErrorReponse("Parameter must not be null");
+            if (ObjParameter.Id == null) return GetErrorReponse("Id must not be null");
 
             var userExists = await dbContext.Users
                 .Include(u => u.CourseList)
@@ -185,6 +230,7 @@ namespace WebApiDotNet.Utils
 
             return GetDataResponse("Removed Successfully");
         }
+        #endregion
         #endregion
     }
 }

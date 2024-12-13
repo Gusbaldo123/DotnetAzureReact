@@ -8,10 +8,17 @@ namespace WebApiDotNet.Utils
         public CourseService(Course? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
 
         #region Handlers
-
-        public async Task<RestResponse> SelectCoursesByIdList(int[] _idList)
+        public override bool isDataFilled(Course? _course) =>
+        _course != null &&
+        !string.IsNullOrEmpty(_course.Title) &&
+        !string.IsNullOrEmpty(_course.ImageBase64) &&
+        !string.IsNullOrEmpty(_course.Description) &&
+        _course.Videos != null;
+        #region CRUD Actions
+        public override async Task<RestResponse> SelectByIdList(int[] _idList)
         {
             List<int> idList = _idList.ToList();
+            if (idList.Count <= 0) return GetErrorReponse("Id list must not be empty");
             try
             {
                 var courses = await dbContext.Courses
@@ -38,7 +45,6 @@ namespace WebApiDotNet.Utils
                 return GetErrorReponse(ex.Message);
             }
         }
-        #region CRUD Actions
         public override async Task<RestResponse> SelectAll()
         {
             try
@@ -69,8 +75,8 @@ namespace WebApiDotNet.Utils
         }
         public override async Task<RestResponse> Select()
         {
-            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
-
+            if (ObjParameter == null) return GetErrorReponse("Parameter must not be null");
+            if (ObjParameter.Id == null) return GetErrorReponse("Id must not be null");
             try
             {
                 var course = await dbContext.Courses
@@ -103,8 +109,8 @@ namespace WebApiDotNet.Utils
         }
         public override async Task<RestResponse> Create()
         {
-            if (ObjParameter == null)
-                return GetErrorReponse("Course Parameter must not be null");
+            if (!isDataFilled(ObjParameter))
+                return GetErrorReponse("Parameter not entirely filled");
 
             List<CourseVideo> list = new List<CourseVideo>();
             bool hasVideos = ObjParameter.Videos.Count > 0;
@@ -143,13 +149,15 @@ namespace WebApiDotNet.Utils
         }
         public override async Task<RestResponse> Update()
         {
-            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+            if (!isDataFilled(ObjParameter))
+                return GetErrorReponse("Parameter not entirely filled");
 
             try
             {
                 var existingVideos = dbContext.CourseVideos.Where(cv => cv.FKCourseId == ObjParameter.Id).ToList();
                 var videosToRemove = existingVideos.Where(ev => !ObjParameter.Videos.Any(v => v.Id == ev.Id)).ToList();
                 dbContext.CourseVideos.RemoveRange(videosToRemove);
+
 
                 foreach (var video in ObjParameter.Videos)
                 {
@@ -193,7 +201,8 @@ namespace WebApiDotNet.Utils
         }
         public override async Task<RestResponse> Delete()
         {
-            if (ObjParameter == null) return GetErrorReponse("Course Parameter must not be null");
+            if (ObjParameter == null) return GetErrorReponse("Parameter must not be null");
+            if (ObjParameter.Id == null) return GetErrorReponse("Id must not be null");
 
             try
             {

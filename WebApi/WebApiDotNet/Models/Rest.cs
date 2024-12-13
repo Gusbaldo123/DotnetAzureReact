@@ -9,10 +9,10 @@ namespace WebApiDotNet.Models
         public object? Data { get; set; }
     }
 
-    public class CRUDAction
+    public class  CRUDAction
     {
-        [Required] public int? Action { get; set; }
-        [Required] public JsonElement? DataParam { get; set; }
+        public int? Action { get; set; }
+        public JsonElement? DataParam { get; set; }
     }
     public enum CRUDActionType
     {

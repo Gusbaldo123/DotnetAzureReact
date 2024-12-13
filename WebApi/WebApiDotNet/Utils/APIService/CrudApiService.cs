@@ -5,12 +5,24 @@ namespace WebApiDotNet.Utils
     public class CrudApiService<T> : ApiService<T>, ICrudApiService
     {
         public CrudApiService(T? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext){}
+
+        public virtual bool isDataFilled(T? _course) => true;
         #region API Actions
         /// <summary>
         /// Select All query
         /// </summary>
         /// <returns>Rest Response with select all</returns>
         public virtual async Task<RestResponse> SelectAll()
+        {
+            await Task.Yield();
+            return None();
+        }
+        /// <summary>
+        /// Select by IdList
+        /// </summary>
+        /// <param name="_idList">Id Array</param>
+        /// <returns></returns>
+        public virtual async Task<RestResponse> SelectByIdList(int[] _idList)
         {
             await Task.Yield();
             return None();
