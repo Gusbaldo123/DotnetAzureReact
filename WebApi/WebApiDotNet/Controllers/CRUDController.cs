@@ -24,23 +24,21 @@ namespace WebApiDotNet.Models
                 return default;
             }
         }
-        protected virtual async Task<IActionResult> PostActions(CRUDAction _action, TEntity _tEntity)
+        protected virtual async Task<RestResponse> PostActions(CRUDAction _action, TEntity _tEntity)
         {
-            try
-            {
-                var service = (TService)Activator.CreateInstance(typeof(TService), _tEntity, dbContext)!;
+            var service = (TService)Activator.CreateInstance(typeof(TService), _tEntity, dbContext)!;
+            if (_action == null || _action.Action == null)
+                return service.None();
 
-                return GetDataResponse((CRUDActionType)_action.Action switch
-                {
-                    CRUDActionType.SELECT_ALL => await service.SelectAll(),
-                    CRUDActionType.SELECT => await service.Select(),
-                    CRUDActionType.CREATE => await service.Create(),
-                    CRUDActionType.UPDATE => await service.Update(),
-                    CRUDActionType.DELETE => await service.Delete(),
-                    _ => service.None()
-                });
-            }
-            catch (Exception ex) { return GetErrorResponse(ex.Message); }
+            return (CRUDActionType)_action.Action switch
+            {
+                CRUDActionType.SELECT_ALL => await service.SelectAll(),
+                CRUDActionType.SELECT => await service.Select(),
+                CRUDActionType.CREATE => await service.Create(),
+                CRUDActionType.UPDATE => await service.Update(),
+                CRUDActionType.DELETE => await service.Delete(),
+                _ => service.None()
+            };
         }
         [HttpPost]
         public async Task<IActionResult> GetResponse([FromBody] CRUDAction _action)
@@ -48,9 +46,9 @@ namespace WebApiDotNet.Models
             TEntity? tEntity = GetDataParam(_action);
 
             if (tEntity == null)
-                return GetErrorResponse("Invalid type or data.");
+                return Ok(new RestResponse(){Success=false, Data = "Invalid id list"});
 
-            return await PostActions(_action, tEntity);
+            return Ok(await PostActions(_action, tEntity));
         }
     }
 }

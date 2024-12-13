@@ -11,7 +11,7 @@ namespace WebApiDotNet.Models
 
     public class CRUDAction
     {
-        [Required] public int Action { get; set; }
+        [Required] public int? Action { get; set; }
         [Required] public JsonElement? DataParam { get; set; }
     }
     public enum CRUDActionType

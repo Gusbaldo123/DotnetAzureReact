@@ -7,7 +7,38 @@ namespace WebApiDotNet.Utils
     {
         public CourseService(Course? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
 
-        #region API Actions
+        #region Handlers
+
+        public async Task<RestResponse> SelectCoursesByIdList(int[] _idList)
+        {
+            List<int> idList = _idList.ToList();
+            try
+            {
+                var courses = await dbContext.Courses
+                .Include(c => c.Videos)
+                .Select(c => new
+                {
+                    id = c.Id,
+                    Title = c.Title,
+                    ImageBase64 = c.ImageBase64,
+                    Description = c.Description,
+                    videoList = c.Videos
+                        .Select(v => new
+                        {
+                            VideoUrl = v.VideoUrl,
+                            VideoTitle = v.VideoTitle
+                        }).ToList()
+                })
+                .Where(c => c.id != null && idList.Contains((int)c.id))
+                .ToListAsync();
+                return GetDataResponse(courses);
+            }
+            catch (Exception ex)
+            {
+                return GetErrorReponse(ex.Message);
+            }
+        }
+        #region CRUD Actions
         public override async Task<RestResponse> SelectAll()
         {
             try
@@ -21,7 +52,8 @@ namespace WebApiDotNet.Utils
                         ImageBase64 = c.ImageBase64,
                         Description = c.Description,
                         videoList = c.Videos
-                        .Select(v => new {
+                        .Select(v => new
+                        {
                             VideoUrl = v.VideoUrl,
                             VideoTitle = v.VideoTitle
                         }).ToList()
@@ -51,13 +83,14 @@ namespace WebApiDotNet.Utils
                         ImageBase64 = c.ImageBase64,
                         Description = c.Description,
                         videoList = c.Videos
-                        .Select(v => new {
+                        .Select(v => new
+                        {
                             VideoUrl = v.VideoUrl,
                             VideoTitle = v.VideoTitle
                         }).ToList()
                     })
                     .FirstOrDefaultAsync();
-                
+
                 if (course == null)
                     return GetErrorReponse("Course not found");
 
@@ -132,8 +165,8 @@ namespace WebApiDotNet.Utils
                         var existingVideo = existingVideos.FirstOrDefault(ev => ev.Id == video.Id);
                         if (existingVideo != null)
                         {
-                            existingVideo.VideoUrl= video.VideoUrl;
-                            existingVideo.VideoTitle= video.VideoTitle;
+                            existingVideo.VideoUrl = video.VideoUrl;
+                            existingVideo.VideoTitle = video.VideoTitle;
                             var videoApiCall = new VideoService(existingVideo, dbContext);
                             var response = await videoApiCall.Update();
                             if (!response.Success) return GetErrorReponse($"Error updating video: {response.Data}");
@@ -201,6 +234,7 @@ namespace WebApiDotNet.Utils
                 return GetErrorReponse(ex.Message);
             }
         }
+        #endregion
         #endregion
     }
 }
