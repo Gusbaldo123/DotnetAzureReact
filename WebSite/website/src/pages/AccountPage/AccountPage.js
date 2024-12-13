@@ -86,16 +86,27 @@ function AccountPage() {
         }
 
         const loadCourses = async () => {
-            var res;
-            if (user && !user.isStudent)
-                res = await CourseManager.getAll();
+            
+            if (!user.isStudent) {
+                var getAll = await CourseManager.getAll();
+                
+                if (!getAll) return;
+                setCourseList(getAll.data);
+            }
             else {
                 const idList = [];
                 user.courseList.forEach(course => idList.push(course.id));
-                res = await CourseManager.getUserCourses(idList);
+                var res;
+                if (idList.length > 0)
+                {
+                    const list = await CourseManager.getByList(idList);
+                    res = list.data;
+                }
+                else res = idList;
+                
+                setCourseList(res);
             }
-            if (!res) return;
-            setCourseList(res.data);
+
         };
 
         loadCourses();

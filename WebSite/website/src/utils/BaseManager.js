@@ -10,8 +10,9 @@ class BaseManager {
     async getDataFromJSON(response) {
         if (!response.ok) return null;
         const resJSON = await response.json();
+        
         if (!resJSON.success) return null;
-        return resJSON.data;
+        return resJSON;
     }
     fetchData = async (dataParam) =>
         await this.getDataFromJSON(await ApiManager.fetchAPI(this.baseURL, dataParam));

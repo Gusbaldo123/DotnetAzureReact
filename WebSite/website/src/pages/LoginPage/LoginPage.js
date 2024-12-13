@@ -25,8 +25,7 @@ async function SubmitLoginForm(event, navigate) {
   }
 
   await AuthManager.authenticate(credentials);
-  if(userManager.getLocalUser())
-  {
+  if (userManager.getLocalUser()) {
     navigate("/Home");
   }
 }
@@ -39,13 +38,13 @@ async function SubmitSignUpForm(event, navigate) {
     isStudent: true,
     firstName: el.lblName.value,
     surname: el.lblSurname.value,
-    phone: el.lblPhone.value
+    phone: el.lblPhone.value,
+    courseList: []
   });
-  await AuthManager.authenticate({email: el.lblEmail.value.toLowerCase(), password: el.lblPass.value});
-  if(userManager.getLocalUser())
-    {
-      navigate("/Home");
-    }
+  await AuthManager.authenticate({ email: el.lblEmail.value.toLowerCase(), password: el.lblPass.value });
+  if (userManager.getLocalUser()) {
+    navigate("/Home");
+  }
 }
 //#endregion
 

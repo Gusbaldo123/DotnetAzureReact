@@ -23,15 +23,18 @@ function CheckBoxChange(event, user, List, targetCourse, i, setUser) {
 
 function SetCourse(List, user, targetCourse, setUser) {
   const updatedUser = { ...user };
-  const courseIndex = updatedUser.CourseList.findIndex(course => course.id == targetCourse.id);
+  
+  if (updatedUser.courseList) {
+    const courseIndex = updatedUser.courseList.findIndex(course => course.id == targetCourse.id);
 
-  if (courseIndex >= 0) {
-    updatedUser.CourseList[courseIndex].videoList = List;
-  } else {
-    updatedUser.CourseList.push({
-      id: targetCourse.id,
-      videoList: List,
-    });
+    if (courseIndex >= 0) {
+      updatedUser.courseList[courseIndex].videoList = List;
+    } else {
+      updatedUser.courseList.push({
+        id: targetCourse.id,
+        videoList: List,
+      });
+    }
   }
 
   setUser(updatedUser);
@@ -58,7 +61,7 @@ function AddVideo({ courseId }) {
 function CoursePage() {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("courseID");
-  
+
   const [user, setUser] = useState(() => UserManager.getLocalUser());
   const [targetCourse, setTargetCourse] = useState(null);
   const [List, setList] = useState([]);
@@ -66,11 +69,13 @@ function CoursePage() {
   useEffect(() => {
     const loadCourse = async () => {
       const res = await CourseManager.get(courseId);
-      if(!res) return;
+
+      if (!res) return;
+
       setTargetCourse(res.data);
 
       let defaultVideoList = [];
-      res.videoList.forEach(() => defaultVideoList.push(false));
+      res.data.videoList.forEach(() => defaultVideoList.push(false));
 
       const userCourseInfo = user?.courseList?.find(course => course.id == courseId);
       setList(userCourseInfo ? userCourseInfo.videoList : defaultVideoList);
