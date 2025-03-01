@@ -49,6 +49,14 @@
     margin: 5px 0;
     width: 95%;
 }
+.courseContent .new{
+    display: flex;
+    justify-content: space-between;
+    padding: 1em 0;
+    margin: 5px auto;
+    color: white;
+    width: 98%;
+}
 .courseContent .courseVideo:hover{
     background-color: #043d22;
     transition: .2s;
