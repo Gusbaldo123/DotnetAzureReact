@@ -41,21 +41,45 @@ function SetCourse(List, user, targetCourse, setUser) {
   UserManager.setLocalUser(updatedUser);
 }
 
-function AddVideoComponent() {
+function DeleteVideo(courseId, id, user) {
+  if (user.isStudent) return;
+  if (window.confirm("Delete this video?")) {
+    VideoManager.delete(courseId, id, user);
+  }
+}
+//#endregion
+
+//#region JSX
+function AddVideoComponent({ courseId, onCancel, onAdd }) {
+  const [videoValues, updateVideoValues] = useState({
+    videoTitle: "",
+    videoUrl: "",
+    fkCourseId: courseId
+  });
+
+  const handleChange = (e) => {
+    updateVideoValues(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   return (
-    <div key={`videoNew`} className={`videoGroupNew`} id={`groupNew`}>
-      <div className={`courseVideo vid new`} id={`vid new`} >
-        <div className="txtVideoName">
-          <label htmlFor="">Video Name: </label>
-          <input type="text" />
-        </div>
-        <div>
-          <label htmlFor="">Video URL: </label>
-          <input type="text" />
-        </div>
-        <div>
-          <button>Save</button>
-          <button>Delete</button>
+    <div key="videoNew" className="videoGroup new" id="groupNew">
+      <div className="courseVideo vid new" id="vid new">
+        <div className="videoContent">
+          <div className="txtVideoName">
+            <label>Video Name: </label>
+            <input type="text" name="videoTitle" value={videoValues.videoTitle} onChange={handleChange} />
+          </div>
+          <div>
+            <label>Video URL: </label>
+            <input type="text" name="videoUrl" value={videoValues.videoUrl} onChange={handleChange} />
+          </div>
+          <div>
+            <button onClick={() => onAdd(videoValues)}>Add</button>
+            <button onClick={onCancel}>Cancel</button>
+          </div>
         </div>
       </div>
     </div>
@@ -63,48 +87,31 @@ function AddVideoComponent() {
 }
 function VideoComponent({ index, user, List, targetCourse, setUser, video, courseId }) {
   const isStudent = user && user.isStudent;
-  return (<div key={index.toString()} className={`videoGroup group${index}`} id={`group${index}`}>
-    <input
-      disabled={user == null}
-      className={`videoCheckbox ch${index}`}
-      id={`ch${index}`}
-      type="checkbox"
-      checked={List[index]}
-      onChange={(e) => CheckBoxChange(e, user, List, targetCourse, index, setUser)} />
-    <div
-      className={`courseVideo vid${index}`}
-      id={`vid${index}`}
-      onClick={() => {
-        window.open(video);
-        const checkboxEvent = { target: { checked: true } };
-        CheckBoxChange(checkboxEvent, user, List, targetCourse, index, setUser);
-      }} >
-      <p className={`lblVideo txtVid${index}`} id={`txtVid${index}`}>
-        <b>{`Video ${index + 1} - ${video.videoTitle}`}</b>
-      </p>
+  return (
+    <div key={index.toString()} className={`videoGroup group${index}`} id={`group${index}`}>
+      <input
+        disabled={!user}
+        className={`videoCheckbox ch${index}`}
+        id={`ch${index}`}
+        type="checkbox"
+        checked={List[index]}
+        onChange={(e) => CheckBoxChange(e, user, List, targetCourse, index, setUser)} />
+      <div
+        className={`courseVideo vid${index}`}
+        id={`vid${index}`}
+        onClick={() => {
+          window.open(video.videoUrl);
+          const checkboxEvent = { target: { checked: true } };
+          CheckBoxChange(checkboxEvent, user, List, targetCourse, index, setUser);
+        }} >
+        <p className={`lblVideo txtVid${index}`} id={`txtVid${index}`}>
+          <b>{`Video ${index + 1} - ${video.videoTitle}`}</b>
+        </p>
+      </div>
+      {user && !isStudent ? <button className="btDelete" onClick={() => DeleteVideo(courseId, video.id, user)}>Del</button> : null}
     </div>
-    {user && !isStudent ? <button className="btDelete" onClick={() => DeleteVideo(courseId, index, user)}>Del</button> : null}
-  </div>)
+  )
 }
-function DeleteVideo({ courseId, id }, user) {
-  if (user.isStudent) return;
-  if (window.confirm("Delete this video?")) {
-    VideoManager.delete(courseId, id, user);
-  }
-}
-//#region TODO
-function AddVideo({ courseId }, user) {
-  if (user.isStudent) return;
-  //TODO
-  VideoManager.add({
-    courseVideoUrl: "TODO",
-    fkCourseId: courseId
-  })
-}
-//#endregion
-//#endregion
-
-//#region JSX
 function CoursePage() {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("courseID");
@@ -112,6 +119,7 @@ function CoursePage() {
   const [user, setUser] = useState(() => UserManager.getLocalUser());
   const [targetCourse, setTargetCourse] = useState(null);
   const [List, setList] = useState([]);
+  const [showAddVideo, setShowAddVideo] = useState(false);
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -121,8 +129,7 @@ function CoursePage() {
 
       setTargetCourse(res.data);
 
-      let defaultVideoList = [];
-      res.data.videoList.forEach(() => defaultVideoList.push(false));
+      let defaultVideoList = res.data.videoList.map(() => false);
 
       const userCourseInfo = user?.courseList?.find(course => course.id === courseId);
       setList(userCourseInfo ? userCourseInfo.videoList : defaultVideoList);
@@ -145,6 +152,11 @@ function CoursePage() {
       document.title = targetCourse.title;
     }
   }, [targetCourse]);
+
+  const handleAddVideo = (videoData) => {
+    VideoManager.add(videoData);
+    setShowAddVideo(false);
+  };
 
   if (!targetCourse) {
     return <div>Loading...</div>;
@@ -170,28 +182,25 @@ function CoursePage() {
           </article>
           <br />
           <div className="courseList">
-            {
-              targetCourse.videoList.map((video, index) =>
-                <VideoComponent index={index} user={user} List={List} targetCourse={targetCourse} setUser={setUser} video={video} courseId={courseId} />)
-            }
-            {
-              user && !isStudent ?
-                (
-                  <>
-                    <AddVideoComponent />
-                    <div key={targetCourse.videoList.length.toString()} className={`videoGroup group${targetCourse.videoList.length}`} id={`group${targetCourse.videoList.length}`}>
-                      <div
-                        className={`courseVideo newVideo vid${targetCourse.videoList.length}`}
-                        id={`vid${targetCourse.videoList.length}`}
-                        onClick={() => AddVideo(courseId, user)} >
-                        <p className={`lblVideo txtVid${targetCourse.videoList.length}`} id={`txtVid${targetCourse.videoList.length}`}>
-                          <b>Add new video</b>
-                        </p>
-                      </div>
-                    </div>
-                  </>
-                ) : null
-            }
+            {targetCourse.videoList.map((video, index) =>
+              <VideoComponent key={index} index={index} user={user} List={List} targetCourse={targetCourse} setUser={setUser} video={video} courseId={courseId} />
+            )}
+            {!isStudent && (
+              <>
+                {showAddVideo && (
+                  <AddVideoComponent
+                    courseId={courseId}
+                    onCancel={() => setShowAddVideo(false)}
+                    onAdd={handleAddVideo}
+                  />
+                )}
+                {!showAddVideo && (
+                  <div className="courseVideo newVideo" onClick={() => setShowAddVideo(true)}>
+                    <p><b>Add new video</b></p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </section>
       </main>

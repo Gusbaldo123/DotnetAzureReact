@@ -1,13 +1,13 @@
 .contentCourseSearch {
   display: flex;
   margin: auto auto 15px auto;
-  width: 30%;
   justify-content: space-between;
+  width: 70vw;
+  max-width: 500px;
 }
 
 .contentCourseSearch input {
-  min-width: 70%;
-  width: 70%;
+  width: 100%;
   background-color: #1E1E1E;
   color: white;
   border: 1px solid #02542D;
@@ -68,8 +68,11 @@
 
 .btCourses {
   border: 2px solid #333;
-  width: 40px;
-  height: 40px;
+  height: 15vw;
+  max-width: 10%;
+  min-height: 25px;
+  min-width: 25px;
+  aspect-ratio: 1/1;
   background-color: #02542D;
   margin: 0 1%;
   border-radius: 50%;
@@ -91,8 +94,8 @@
 
 .course {
   position: relative;
-  width: 40%;
-  aspect-ratio: 7 / 4;
+  width: fit-content;
+  aspect-ratio: 7 / 5;
   border-radius: 16px;
   background-color: #0B2A1C;
   border: 2px solid #0B2A1C;
@@ -121,7 +124,7 @@
 }
 
 .course img {
-  width: 100%;
+  width: 15vw;
   border-radius: 25px;
 }
 

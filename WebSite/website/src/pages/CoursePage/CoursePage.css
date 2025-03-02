@@ -21,6 +21,8 @@
 }
 .courseContent img{
     width: 100%;
+    min-width: 15vw;
+    aspect-ratio: 7/5;
     border-radius: 5%;
     border: 5px solid white;
 }
@@ -37,10 +39,34 @@
 .courseContent .videoGroup{
     display: flex;
     width: 100%;
+    margin: auto;
+    justify-content: center;
 }
 .courseContent .videoGroup .videoCheckbox{
     margin: auto;
     transform: scale(1.5);
+}
+.courseContent .videoGroup .new{
+    font-weight: bold;
+}
+.courseContent .videoGroup .new input{
+    padding: 5px;
+    border: 0;
+    border-radius: 4px;
+}
+.courseContent .videoGroup .new button{
+    background-color: #043d22;
+    color:white;
+    padding: 5px;
+    margin-right: 4px;
+    border: 2px solid #043d22;
+    border-radius: 5px;
+}
+.courseContent .videoGroup .new button:hover{
+    background-color: white;
+    color:#043d22;
+    border: 2px solid #02542D;
+    transition: .4s;
 }
 .courseContent .courseVideo{
     background-color: #02542D;
@@ -49,14 +75,18 @@
     margin: 5px 0;
     width: 95%;
 }
-.courseContent .new{
+.courseContent .courseVideo .videoContent{
     display: flex;
     justify-content: space-between;
-    padding: 1em 0;
-    margin: 5px auto;
+    padding: 11px;
+    margin: auto;
     color: white;
     width: 98%;
 }
+.courseContent .courseVideo .videoContent div{
+    margin: auto 0;
+}
+
 .courseContent .courseVideo:hover{
     background-color: #043d22;
     transition: .2s;
