@@ -1,7 +1,9 @@
 //#region imports
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 import "./CoursePage.css";
+
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
@@ -14,13 +16,28 @@ export default CoursePage;
 //#endregion
 
 //#region Handlers
+const ImageToBase64 = (e, course, updateImg64) => {
+  const reader = new FileReader()
+
+  reader.readAsDataURL(e.target.files[0])
+
+  reader.onload = () => {
+    try {
+      const base64img = reader.result.replace(/^data:image\/\w+;base64,/, "");
+      course.imageBase64 = base64img;
+      UpdateCourse(course);
+      updateImg64(base64img);
+    } catch (error) {
+      alert("Error when uploading image");
+    }
+  }
+}
 function CheckBoxChange(event, user, List, targetCourse, i, setUser) {
   if (!user) return;
   const newList = [...List];
   newList[i] = event.target.checked;
   SetCourse(newList, user, targetCourse, setUser);
 }
-
 function SetCourse(List, user, targetCourse, setUser) {
   const updatedUser = { ...user };
 
@@ -40,7 +57,23 @@ function SetCourse(List, user, targetCourse, setUser) {
   setUser(updatedUser);
   UserManager.setLocalUser(updatedUser);
 }
+function UpdateCourse(course) {
+  if (course.title.length <= 0) return;
 
+  CourseManager.update({
+    "id": course.id,
+    "title": course.title,
+    "imageBase64": course.imageBase64,
+    "description": course.description,
+    "videoList": course.videoList
+  });
+}
+function DeleteCourse(courseId, navigate) {
+  if (window.confirm("Delete this course?")) {
+    CourseManager.delete(courseId);
+    navigate("/home");
+  }
+}
 function DeleteVideo(courseId, id, user) {
   if (user.isStudent) return;
   if (window.confirm("Delete this video?")) {
@@ -50,12 +83,23 @@ function DeleteVideo(courseId, id, user) {
 //#endregion
 
 //#region JSX
-function AddVideoComponent({ courseId, onCancel, onAdd }) {
-  const [videoValues, updateVideoValues] = useState({
+function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVideo, videoList, updateVideoList }) {
+  const emptyVideoValues = {
+    id: 0,
     videoTitle: "",
     videoUrl: "",
-    fkCourseId: courseId
-  });
+    fkCourseId: Number(courseId)
+  };
+  const [videoValues, updateVideoValues] = useState({ ...emptyVideoValues });
+  if (!user) return;
+  if (user.isStudent) return;
+
+  if (showAddVideo)
+    return (
+      <div className="courseVideo newVideo" onClick={() => setShowAddVideo(!showAddVideo)}>
+        <p><b>Add new video</b></p>
+      </div>
+    );
 
   const handleChange = (e) => {
     updateVideoValues(prev => ({
@@ -63,6 +107,11 @@ function AddVideoComponent({ courseId, onCancel, onAdd }) {
       [e.target.name]: e.target.value
     }));
   };
+  const handleAddClick = (onAdd, videoValues, showAddVideo, emptyVideoValues, videoList, updateVideoList) => {
+    onAdd(videoValues, videoList, updateVideoList);
+    setShowAddVideo(!showAddVideo);
+    updateVideoValues({ ...emptyVideoValues });
+  }
 
   return (
     <div key="videoNew" className="videoGroup new" id="groupNew">
@@ -77,8 +126,8 @@ function AddVideoComponent({ courseId, onCancel, onAdd }) {
             <input type="text" name="videoUrl" value={videoValues.videoUrl} onChange={handleChange} />
           </div>
           <div>
-            <button onClick={() => onAdd(videoValues)}>Add</button>
-            <button onClick={onCancel}>Cancel</button>
+            <button onClick={() => { handleAddClick(onAdd, videoValues, showAddVideo, emptyVideoValues, videoList, updateVideoList) }}>Add</button>
+            <button onClick={() => setShowAddVideo(!showAddVideo)}>Cancel</button>
           </div>
         </div>
       </div>
@@ -119,14 +168,16 @@ function CoursePage() {
   const [user, setUser] = useState(() => UserManager.getLocalUser());
   const [targetCourse, setTargetCourse] = useState(null);
   const [List, setList] = useState([]);
-  const [showAddVideo, setShowAddVideo] = useState(false);
+  const [showAddVideo, setShowAddVideo] = useState(true);
+  const navigate = useNavigate();
+  const [img64, updateImg64] = useState("");
+  const [videoList, updateVideoList] = useState([]);
 
   useEffect(() => {
     const loadCourse = async () => {
       const res = await CourseManager.get(courseId);
 
       if (!res) return;
-
       setTargetCourse(res.data);
 
       let defaultVideoList = res.data.videoList.map(() => false);
@@ -150,19 +201,21 @@ function CoursePage() {
   useEffect(() => {
     if (targetCourse) {
       document.title = targetCourse.title;
+      updateImg64(targetCourse.imageBase64);
+      updateVideoList(targetCourse.videoList);
     }
   }, [targetCourse]);
 
-  const handleAddVideo = (videoData) => {
+  const handleAddVideo = (videoData, videoList, updateVideoList) => {
     VideoManager.add(videoData);
     setShowAddVideo(false);
+    videoList.push(videoData);
+    updateVideoList(videoList);
   };
 
   if (!targetCourse) {
     return <div>Loading...</div>;
   }
-
-  const isStudent = user && user.isStudent;
 
   return (
     <>
@@ -171,36 +224,55 @@ function CoursePage() {
         <Banner />
         <section className="courseContent">
           <article>
-            <div>
-              <img src={`data:image/jpeg;base64,${targetCourse.imageBase64}`} alt="courseImage" />
-            </div>
-            <div>
-              <h2>{targetCourse.title}</h2>
-              <p>Author: <a href="https://www.linkedin.com/in/gustavorbpereira/">Gustavo Pereira</a></p>
-              <p>{targetCourse.description}</p>
-            </div>
+            {
+              !user || user.isStudent ?
+                (
+                  <div className="img-content">
+                    <img src={`data:image/jpeg;base64,${img64}`} alt="courseImage" />
+                  </div>
+                ) :
+                (
+                  <div className="img-content">
+                    <img src={`data:image/jpeg;base64,${img64}`} alt="courseImage" />
+                    <label for="file-upload" class="custom-file-upload"> Upload Image </label>
+                    <input type="file" name="" id="file-upload" onChange={(e) => { ImageToBase64(e, targetCourse, updateImg64) }} />
+                  </div>
+                )
+            }
+            {
+              !user || user.isStudent ?
+                (
+                  <div >
+                    <h2>{targetCourse.title}</h2>
+                    <p>Author: <a href="https://www.linkedin.com/in/gustavorbpereira/">Gustavo Pereira</a></p>
+                    <p>{targetCourse.description}</p>
+                  </div>
+                ) :
+                (
+                  <div className="videoInfo">
+                    <input type="text" defaultValue={targetCourse.title} onChange={(e) => {
+                      if (e.target.value.length > 0)
+                        targetCourse.title = e.target.value;
+                      UpdateCourse(targetCourse);
+                    }} />
+                    <div className="deleteCourse">
+                      <button onClick={() => { DeleteCourse(courseId, navigate) }}>Remove Course</button>
+                    </div>
+                    <p>Author: <a href="https://www.linkedin.com/in/gustavorbpereira/">Gustavo Pereira</a></p>
+                    <textarea name="" id="" onChange={(e) => {
+                      targetCourse.description = e.target.value; UpdateCourse(targetCourse);
+                    }} defaultValue={targetCourse.description} />
+
+                  </div>
+                )
+            }
           </article>
           <br />
           <div className="courseList">
-            {targetCourse.videoList.map((video, index) =>
+            {videoList.map((video, index) =>
               <VideoComponent key={index} index={index} user={user} List={List} targetCourse={targetCourse} setUser={setUser} video={video} courseId={courseId} />
             )}
-            {!isStudent && (
-              <>
-                {showAddVideo && (
-                  <AddVideoComponent
-                    courseId={courseId}
-                    onCancel={() => setShowAddVideo(false)}
-                    onAdd={handleAddVideo}
-                  />
-                )}
-                {!showAddVideo && (
-                  <div className="courseVideo newVideo" onClick={() => setShowAddVideo(true)}>
-                    <p><b>Add new video</b></p>
-                  </div>
-                )}
-              </>
-            )}
+            <AddVideoComponent user={user} courseId={courseId} onAdd={handleAddVideo} showAddVideo={showAddVideo} setShowAddVideo={setShowAddVideo} videoList={videoList} updateVideoList={updateVideoList} />
           </div>
         </section>
       </main>

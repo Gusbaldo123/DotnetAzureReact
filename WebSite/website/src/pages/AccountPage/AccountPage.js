@@ -10,6 +10,7 @@ import Banner from "../../components/shared/Banner.js";
 
 import UserManager from "../../utils/UserManager.js";
 import CourseManager from "../../utils/CourseManager.js";
+import courseManager from "../../utils/CourseManager.js";
 
 export default AccountPage;
 //#endregion
@@ -20,17 +21,15 @@ function UpdateAccount(e, navigate) {
 
     navigate("/home");
 }
-//#region TODO
-function AddCourse() {
-    CourseManager.addCourse({
-        id: 0,
-        title: "TODO",
-        imageBase64: "TODO",
-        description: "TODO",
-        videoList: []
+function AddCourse(navigate) {
+    courseManager.add({
+        "title": "New Course",
+        "imageBase64": "placeholder_base64_data",
+        "description": "Insert Description Here",
+        "videoList": []
     });
+    navigate("/home");
 }
-//#endregion
 //#endregion
 
 //#region JSX
@@ -48,10 +47,10 @@ function CourseImage({ targetCourse, user, navigate }) {
         </div>
     ) : null;
 }
-function NewCourseImage({ user, id }) {
+function NewCourseImage({ user, id, navigate }) {
     if (user.isStudent) return;
 
-    return <div className="courseOption" id={`course${id}`} onClick={AddCourse}>
+    return <div className="courseOption" id={`course${id}`} onClick={()=>{AddCourse(navigate)}}>
         <img src={require("../../assets/NewCourse.png")} alt="New Course" />
         <h4>Create Course</h4>
     </div>
@@ -64,10 +63,10 @@ function CourseList({ user, navigate, courseList }) {
             <br />
             <div className="listVideos">
                 {
-                    courseList.length <= 0 ?
+                    courseList.length <= 0 && user.isStudent?
                         (<p>You haven't started a course yet</p>) : (courseList.map((course) => <CourseImage targetCourse={course} key={course.id} user={user} navigate={navigate} />))
                 }
-                <NewCourseImage user={user} id={user.courseList.length} />
+                <NewCourseImage user={user} id={user.courseList.length} navigate={navigate}/>
             </div>
         </div>
     )
@@ -149,7 +148,7 @@ function AccountPage() {
                     </div>
                 </form>
                 <br />
-                <CourseList user={user} navigate={navigate} courseList={courseList} />
+                <CourseList user={user} navigate={navigate} courseList={courseList}/>
             </section>
             <Footer />
         </>

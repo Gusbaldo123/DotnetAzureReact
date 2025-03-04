@@ -25,8 +25,55 @@ const PreviousCourse = (setCurrentIndex, CourseList) => {
 //#endregion
 
 //#region JSX
-function HomePage() {
+function CarrousselCourses({ CourseList, navigate }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const visibleItems = [
+    CourseList[currentIndex],
+    CourseList[(currentIndex + 1) % CourseList.length],
+    CourseList[(currentIndex + 2) % CourseList.length],
+  ];
+  function Wrapper({ visibleItems, navigate }) {
+
+    if (visibleItems.includes(undefined))
+      return (
+        <div className="carouselWrapper">
+          <h2 className="emptyCourses">There are no courses yet</h2>
+        </div>
+      );
+
+    return (
+      <div className="carouselWrapper">
+        {
+          visibleItems.map((course, i) => {
+            if (course)
+              return (
+                <div key={i} className="course fade" onClick={() => navigate(`/Course?courseID=${course.id}`)}>
+                  <img src={`data:image/png;base64,${course.imageBase64}`} alt={`course${i}`} />
+                  <div className="courseName">{course.title}</div>
+                </div>
+              )
+          })
+        }
+      </div>
+    );
+  }
+
+  return (
+    <div className="contentCourseCaroussel">
+      <button onClick={() => PreviousCourse(setCurrentIndex, CourseList)} className="contentCoursePrevious btCourses">
+        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 4l8 8-8 8" /></svg>
+      </button>
+      <Wrapper visibleItems={visibleItems} navigate={navigate} />
+      <button onClick={() => NextCourse(setCurrentIndex, CourseList)} className="contentCourseNext btCourses">
+        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 4l8 8-8 8" /></svg>
+      </button>
+    </div>
+  );
+}
+
+function HomePage() {
+
   const [CourseList, setCourseList] = useState(null);
   const navigate = useNavigate();
 
@@ -35,22 +82,16 @@ function HomePage() {
 
     const loadCourses = async () => {
       const res = await CourseManager.getAll();
-      if(!res) return;
+      if (!res) return;
       setCourseList(res.data);
     };
 
     loadCourses();
   }, []);
 
-  if (!CourseList) {
-    return <div>Loading...</div>;
-  }
+  if (!CourseList)
+    return <div className="homepage-loading">Loading...</div>;
 
-  const visibleItems = [
-    CourseList[currentIndex],
-    CourseList[(currentIndex + 1) % CourseList.length],
-    CourseList[(currentIndex + 2) % CourseList.length],
-  ];
   return (
     <>
       <Header />
@@ -58,51 +99,10 @@ function HomePage() {
         <Banner />
         <section className="content">
           <div className="contentCourseSearch">
-            <input
-              type="text"
-              id="contentCourseText"
-              className="contentCourseText"
-              placeholder="What do you want to learn?"
-            />
+            <input type="text" id="contentCourseText" className="contentCourseText" placeholder="What do you want to learn?" />
             <button>Search</button>
           </div>
-          <div className="contentCourseCaroussel">
-            <button
-              onClick={() => PreviousCourse(setCurrentIndex, CourseList)}
-              className="contentCoursePrevious btCourses">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor">
-                <path d="M8 4l8 8-8 8" />
-              </svg>
-            </button>
-            <div className="carouselWrapper">
-              {visibleItems.map((course, i) => (
-                <div
-                  key={i}
-                  className="course fade"
-                  onClick={() => navigate(`/Course?courseID=${course.id}`)}>
-                  <img src={`data:image/png;base64,${course.imageBase64}`} alt={`course${i}`} />
-                  <div className="courseName">{course.title}</div>
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={() => NextCourse(setCurrentIndex, CourseList)}
-              className="contentCourseNext btCourses">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor">
-                <path d="M8 4l8 8-8 8" />
-              </svg>
-            </button>
-          </div>
+          <CarrousselCourses CourseList={CourseList} navigate={navigate} />
         </section>
       </main>
       <Footer />

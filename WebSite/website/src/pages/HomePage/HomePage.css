@@ -90,6 +90,11 @@
 .carouselWrapper {
   display: flex;
   gap: 20px;
+  text-align: center;
+  color: white;
+}
+.carouselWrapper .emptyCourses{
+  color: white;
 }
 
 .course {
