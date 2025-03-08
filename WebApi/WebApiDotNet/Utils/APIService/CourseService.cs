@@ -60,6 +60,7 @@ namespace WebApiDotNet.Utils
                         videoList = c.Videos
                         .Select(v => new
                         {
+                            id = v.Id,
                             VideoUrl = v.VideoUrl,
                             VideoTitle = v.VideoTitle
                         }).ToList()
@@ -91,6 +92,7 @@ namespace WebApiDotNet.Utils
                         videoList = c.Videos
                         .Select(v => new
                         {
+                            id = v.Id,
                             VideoUrl = v.VideoUrl,
                             VideoTitle = v.VideoTitle
                         }).ToList()
