@@ -74,12 +74,16 @@ function DeleteCourse(courseId, navigate) {
     navigate("/home");
   }
 }
-function DeleteVideo(courseId, id, user) {
+function DeleteVideo(id, user, index, videoList, updateVideoList) {
   if (user.isStudent) return;
   if (window.confirm("Delete this video?")) {
-    VideoManager.delete(courseId, id, user);
+    VideoManager.delete(id);
+    const newVideoList = [...videoList]; // Cria uma cópia do array
+    newVideoList.splice(index, 1); // Remove o item
+    updateVideoList(newVideoList); // Atualiza o estado com um novo array
   }
 }
+
 //#endregion
 
 //#region JSX
@@ -134,7 +138,7 @@ function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVide
     </div>
   );
 }
-function VideoComponent({ index, user, List, targetCourse, setUser, video, courseId }) {
+function VideoComponent({ index, user, List, targetCourse, setUser, video, videoList, updateVideoList }) {
   const isStudent = user && user.isStudent;
   return (
     <div key={index.toString()} className={`videoGroup group${index}`} id={`group${index}`}>
@@ -157,7 +161,7 @@ function VideoComponent({ index, user, List, targetCourse, setUser, video, cours
           <b>{`Video ${index + 1} - ${video.videoTitle}`}</b>
         </p>
       </div>
-      {user && !isStudent ? <button className="btDelete" onClick={() => DeleteVideo(courseId, video.id, user)}>Del</button> : null}
+      {user && !isStudent ? <button className="btDelete" onClick={() => DeleteVideo(video.id, user, index, videoList, updateVideoList)}>Del</button> : null}
     </div>
   )
 }
@@ -234,7 +238,7 @@ function CoursePage() {
                 (
                   <div className="img-content">
                     <img src={`data:image/jpeg;base64,${img64}`} alt="courseImage" />
-                    <label for="file-upload" class="custom-file-upload"> Upload Image </label>
+                    <label htmlFor="file-upload" className="custom-file-upload"> Upload Image </label>
                     <input type="file" name="" id="file-upload" onChange={(e) => { ImageToBase64(e, targetCourse, updateImg64) }} />
                   </div>
                 )
@@ -270,7 +274,7 @@ function CoursePage() {
           <br />
           <div className="courseList">
             {videoList.map((video, index) =>
-              <VideoComponent key={index} index={index} user={user} List={List} targetCourse={targetCourse} setUser={setUser} video={video} courseId={courseId} />
+              <VideoComponent key={index} index={index} user={user} List={List} targetCourse={targetCourse} setUser={setUser} video={video} videoList={videoList} updateVideoList={updateVideoList} />
             )}
             <AddVideoComponent user={user} courseId={courseId} onAdd={handleAddVideo} showAddVideo={showAddVideo} setShowAddVideo={setShowAddVideo} videoList={videoList} updateVideoList={updateVideoList} />
           </div>
