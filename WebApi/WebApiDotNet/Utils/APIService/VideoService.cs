@@ -132,11 +132,16 @@ namespace WebApiDotNet.Utils
             if (ObjParameter == null) return GetErrorReponse("Parameter must not be null");
             if (ObjParameter.Id == null) return GetErrorReponse("Id must not be null");
 
-            dbContext.CourseVideos.Remove(ObjParameter);
+            var video = await dbContext.CourseVideos.FindAsync(ObjParameter.Id);
+
+            if (video == null) return GetErrorReponse("Error: Video not found or already deleted.");
+
+            dbContext.CourseVideos.Remove(video);
             await dbContext.SaveChangesAsync();
 
             return GetDataResponse("Removed Successfully");
         }
+
         #endregion
         #endregion
     }
