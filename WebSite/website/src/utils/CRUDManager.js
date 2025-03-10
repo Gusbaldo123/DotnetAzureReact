@@ -9,7 +9,7 @@ class CRUDManager extends BaseManager {
     getByList = async (data) => 
         await this.getDataFromJSON(await ApiManager.fetchAPI(`${this.baseURL}/idlist`, data))
     fetchCRUDData = async (action, dataParam) =>
-        await this.getDataFromJSON(await ApiManager.fetchAPI(this.baseURL, { action: action, dataparam: dataParam, }));
+        await this.getDataFromJSON(await ApiManager.fetchAPI(this.baseURL, { action: action, dataparam: dataParam }));
     getAll = async () => await this.fetchCRUDData(0, {});
     get = async (id) => await this.fetchCRUDData(1, { id:Number(id) });
     add = async (data) => await this.fetchCRUDData(2, data);

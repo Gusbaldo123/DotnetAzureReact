@@ -78,16 +78,16 @@ function DeleteVideo(id, user, index, videoList, updateVideoList) {
   if (user.isStudent) return;
   if (window.confirm("Delete this video?")) {
     VideoManager.delete(id);
-    const newVideoList = [...videoList]; // Cria uma cópia do array
-    newVideoList.splice(index, 1); // Remove o item
-    updateVideoList(newVideoList); // Atualiza o estado com um novo array
+    const newVideoList = [...videoList];
+    newVideoList.splice(index, 1);
+    updateVideoList(newVideoList);
   }
 }
 
 //#endregion
 
 //#region JSX
-function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVideo, videoList, updateVideoList }) {
+function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVideo, videoList, updateVideoList, setList }) {
   const emptyVideoValues = {
     id: 0,
     videoTitle: "",
@@ -111,11 +111,29 @@ function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVide
       [e.target.name]: e.target.value
     }));
   };
-  const handleAddClick = (onAdd, videoValues, showAddVideo, emptyVideoValues, videoList, updateVideoList) => {
-    onAdd(videoValues, videoList, updateVideoList);
+  const handleAddClick = async (
+    onAdd,
+    videoValues,
+    showAddVideo,
+    emptyVideoValues,
+    videoList,
+    updateVideoList
+  ) => {
+    if (!(videoValues.fkCourseId > 0)) return;
+    if (videoValues.videoTitle.length < 1) return;
+    if (videoValues.videoUrl.length < 1) return;
+
+    await onAdd(videoValues, videoList, updateVideoList);
+
     setShowAddVideo(!showAddVideo);
     updateVideoValues({ ...emptyVideoValues });
-  }
+
+    const res = await CourseManager.get(videoValues.fkCourseId);
+    if (res && res.data) {
+      updateVideoList(res.data.videoList);
+      setList(res.data.videoList.map(() => false));
+    }
+  };
 
   return (
     <div key="videoNew" className="videoGroup new" id="groupNew">
@@ -130,7 +148,7 @@ function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVide
             <input type="text" name="videoUrl" value={videoValues.videoUrl} onChange={handleChange} />
           </div>
           <div>
-            <button onClick={() => { handleAddClick(onAdd, videoValues, showAddVideo, emptyVideoValues, videoList, updateVideoList) }}>Add</button>
+            <button onClick={async () => { handleAddClick(onAdd, videoValues, showAddVideo, emptyVideoValues, videoList, updateVideoList) }}>Add</button>
             <button onClick={() => setShowAddVideo(!showAddVideo)}>Cancel</button>
           </div>
         </div>
@@ -147,7 +165,7 @@ function VideoComponent({ index, user, List, targetCourse, setUser, video, video
         className={`videoCheckbox ch${index}`}
         id={`ch${index}`}
         type="checkbox"
-        checked={List[index]}
+        checked={List[index] ?? false}
         onChange={(e) => CheckBoxChange(e, user, List, targetCourse, index, setUser)} />
       <div
         className={`courseVideo vid${index}`}
@@ -210,11 +228,10 @@ function CoursePage() {
     }
   }, [targetCourse]);
 
-  const handleAddVideo = (videoData, videoList, updateVideoList) => {
-    VideoManager.add(videoData);
-    setShowAddVideo(false);
-    videoList.push(videoData);
-    updateVideoList(videoList);
+  const handleAddVideo = async (videoData, videoList, updateVideoList) => {
+    await VideoManager.add(videoData);
+    const newVideoList = [...videoList, videoData];
+    updateVideoList(newVideoList);
   };
 
   if (!targetCourse) {
@@ -276,7 +293,7 @@ function CoursePage() {
             {videoList.map((video, index) =>
               <VideoComponent key={index} index={index} user={user} List={List} targetCourse={targetCourse} setUser={setUser} video={video} videoList={videoList} updateVideoList={updateVideoList} />
             )}
-            <AddVideoComponent user={user} courseId={courseId} onAdd={handleAddVideo} showAddVideo={showAddVideo} setShowAddVideo={setShowAddVideo} videoList={videoList} updateVideoList={updateVideoList} />
+            <AddVideoComponent user={user} courseId={courseId} onAdd={handleAddVideo} showAddVideo={showAddVideo} setShowAddVideo={setShowAddVideo} videoList={videoList} updateVideoList={updateVideoList} setList={setList} />
           </div>
         </section>
       </main>
