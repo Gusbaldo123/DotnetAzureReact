@@ -32,24 +32,24 @@ const ImageToBase64 = (e, course, updateImg64) => {
     }
   }
 }
-function CheckBoxChange(event, user, List, targetCourse, i, setUser) {
+function CheckBoxChange(event, user, watchedVidList, setWatchedVidList, targetCourse, i, setUser) {
   if (!user) return;
-  const newList = [...List];
-  newList[i] = event.target.checked;
+  const newList = { ...watchedVidList };
+  newList.videoList[i] = event.target.checked;
+  setWatchedVidList(newList);
   SetCourse(newList, user, targetCourse, setUser);
 }
-function SetCourse(List, user, targetCourse, setUser) {
+function SetCourse(watchedVidList, user, targetCourse, setUser) {
   const updatedUser = { ...user };
-
   if (updatedUser.courseList) {
     const courseIndex = updatedUser.courseList.findIndex(course => course.id === targetCourse.id);
 
     if (courseIndex >= 0) {
-      updatedUser.courseList[courseIndex].videoList = List;
+      updatedUser.courseList[courseIndex].videoList = watchedVidList;
     } else {
       updatedUser.courseList.push({
         id: targetCourse.id,
-        videoList: List,
+        videoList: watchedVidList,
       });
     }
   }
@@ -87,7 +87,7 @@ function DeleteVideo(id, user, index, videoList, updateVideoList) {
 //#endregion
 
 //#region JSX
-function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVideo, videoList, updateVideoList, setList }) {
+function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVideo, videoList, updateVideoList, setWatchedVidList }) {
   const emptyVideoValues = {
     id: 0,
     videoTitle: "",
@@ -131,7 +131,9 @@ function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVide
     const res = await CourseManager.get(videoValues.fkCourseId);
     if (res && res.data) {
       updateVideoList(res.data.videoList);
-      setList(res.data.videoList.map(() => false));
+      const newVidList = { ...res.data };
+      newVidList.videoList = newVidList.videoList.map(() => false);
+      setWatchedVidList(newVidList);
     }
   };
 
@@ -156,24 +158,25 @@ function AddVideoComponent({ user, courseId, onAdd, showAddVideo, setShowAddVide
     </div>
   );
 }
-function VideoComponent({ index, user, List, targetCourse, setUser, video, videoList, updateVideoList }) {
+function VideoComponent({ index, user, watchedVidList, setWatchedVidList, targetCourse, setUser, video, videoList, updateVideoList }) {
   const isStudent = user && user.isStudent;
+  const isWatched = isStudent ? watchedVidList.videoList[index] : false;
   return (
     <div key={index.toString()} className={`videoGroup group${index}`} id={`group${index}`}>
       <input
-        disabled={!user}
+        disabled={!isStudent}
         className={`videoCheckbox ch${index}`}
         id={`ch${index}`}
         type="checkbox"
-        checked={List[index] ?? false}
-        onChange={(e) => CheckBoxChange(e, user, List, targetCourse, index, setUser)} />
+        checked={isWatched}
+        onChange={(e) => CheckBoxChange(e, user, watchedVidList, setWatchedVidList, targetCourse, index, setUser)} />
       <div
         className={`courseVideo vid${index}`}
         id={`vid${index}`}
         onClick={() => {
           window.open(video.videoUrl);
           const checkboxEvent = { target: { checked: true } };
-          CheckBoxChange(checkboxEvent, user, List, targetCourse, index, setUser);
+          CheckBoxChange(checkboxEvent, user, watchedVidList, setWatchedVidList, targetCourse, index, setUser);
         }} >
         <p className={`lblVideo txtVid${index}`} id={`txtVid${index}`}>
           <b>{`Video ${index + 1} - ${video.videoTitle}`}</b>
@@ -189,7 +192,7 @@ function CoursePage() {
 
   const [user, setUser] = useState(() => UserManager.getLocalUser());
   const [targetCourse, setTargetCourse] = useState(null);
-  const [List, setList] = useState([]);
+  const [watchedVidList, setWatchedVidList] = useState([]);
   const [showAddVideo, setShowAddVideo] = useState(true);
   const navigate = useNavigate();
   const [img64, updateImg64] = useState("");
@@ -202,17 +205,19 @@ function CoursePage() {
       if (!res) return;
       setTargetCourse(res.data);
 
-      let defaultVideoList = res.data.videoList.map(() => false);
-
-      const userCourseInfo = user?.courseList?.find(course => course.id === courseId);
-      setList(userCourseInfo ? userCourseInfo.videoList : defaultVideoList);
-
+      let defaultVideoList = {
+        id: courseId,
+        videoList: res.data.videoList.map(() => false),
+      };
+      const userCourseIndex = user?.courseList?.findIndex((course) => Number(course.id) === Number(courseId));
+      if (userCourseIndex >= 0)
+        setWatchedVidList(user.courseList[userCourseIndex]);
+      else {
+        setWatchedVidList(defaultVideoList);
+      }
       if (user && !user.courseList.find(course => course.id === courseId)) {
         const newUser = { ...user };
-        newUser.courseList.push({
-          id: courseId,
-          videoList: defaultVideoList,
-        });
+        newUser.courseList.push(defaultVideoList);
         setUser(newUser);
       }
     };
@@ -291,9 +296,9 @@ function CoursePage() {
           <br />
           <div className="courseList">
             {videoList.map((video, index) =>
-              <VideoComponent key={index} index={index} user={user} List={List} targetCourse={targetCourse} setUser={setUser} video={video} videoList={videoList} updateVideoList={updateVideoList} />
+              <VideoComponent key={index} index={index} user={user} watchedVidList={watchedVidList} setWatchedVidList={setWatchedVidList} targetCourse={targetCourse} setUser={setUser} video={video} videoList={videoList} updateVideoList={updateVideoList} />
             )}
-            <AddVideoComponent user={user} courseId={courseId} onAdd={handleAddVideo} showAddVideo={showAddVideo} setShowAddVideo={setShowAddVideo} videoList={videoList} updateVideoList={updateVideoList} setList={setList} />
+            <AddVideoComponent user={user} courseId={courseId} onAdd={handleAddVideo} showAddVideo={showAddVideo} setShowAddVideo={setShowAddVideo} videoList={videoList} updateVideoList={updateVideoList} setWatchedVidList={setWatchedVidList} />
           </div>
         </section>
       </main>
