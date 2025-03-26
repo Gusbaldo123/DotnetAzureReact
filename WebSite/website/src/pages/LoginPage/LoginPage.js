@@ -9,8 +9,7 @@ import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
 import UserManager from "../../utils/UserManager.js";
-import AuthManager from "../../utils/AuthManager.js"
-import userManager from "../../utils/UserManager.js";
+import AuthManager from "../../utils/AuthManager.js";
 
 export default LoginPage;
 //#endregion
@@ -25,7 +24,7 @@ async function SubmitLoginForm(event, navigate) {
   }
 
   await AuthManager.authenticate(credentials);
-  if (userManager.getLocalUser()) {
+  if (UserManager.getLocalUser()) {
     navigate("/Home");
   }
 }
@@ -42,7 +41,7 @@ async function SubmitSignUpForm(event, navigate) {
     courseList: []
   });
   await AuthManager.authenticate({ email: el.lblEmail.value.toLowerCase(), password: el.lblPass.value });
-  if (userManager.getLocalUser()) {
+  if (UserManager.getLocalUser()) {
     navigate("/Home");
   }
 }

@@ -10,25 +10,57 @@ import Banner from "../../components/shared/Banner.js";
 
 import UserManager from "../../utils/UserManager.js";
 import CourseManager from "../../utils/CourseManager.js";
-import courseManager from "../../utils/CourseManager.js";
+import AuthManager from "../../utils/AuthManager.js"
 
 export default AccountPage;
 //#endregion
 
 //#region Handlers
-function UpdateAccount(e, navigate) {
+async function UpdateAccount(e, userVal, navigate) {
     e.preventDefault();
 
-    navigate("/home");
+    var courseList = [...userVal.courseList];
+
+    userVal.courseList = [];
+    courseList.forEach(element => {
+        if (!(userVal.courseList.find((course) => {
+            course.id = Number(course.id);
+            return Number(course.id) == Number(element.id);
+        }))) {
+            userVal.courseList.push(element);
+        }
+    });
+
+    await UserManager.update({
+        id: userVal.id,
+        email: userVal.email,
+        password: userVal.password,
+        isStudent: userVal.isStudent,
+        firstName: userVal.firstName,
+        surname: userVal.surname,
+        phone: userVal.phone,
+        courseList: userVal.courseList
+    });
+    
+    await AuthManager.authenticate({ email: userVal.email, password: userVal.password });
+
+    if (UserManager.getLocalUser()) {
+        navigate("/Home");
+    }
 }
 function AddCourse(navigate) {
-    courseManager.add({
+    CourseManager.add({
         "title": "New Course",
         "imageBase64": "placeholder_base64_data",
         "description": "Insert Description Here",
         "videoList": []
     });
     navigate("/home");
+}
+function HandleUpdaveVal(e, userVal, property, updateUserVal) {
+    const newUser = { ...userVal };
+    newUser[property] = e.target.value;
+    updateUserVal(newUser);    
 }
 //#endregion
 
@@ -37,7 +69,13 @@ function CourseImage({ targetCourse, user, navigate }) {
     const userTargetCourse = user.courseList.find((courseArg) => courseArg.id == targetCourse.id);
     let counterDone = 0;
 
-    if (user.isStudent) userTargetCourse.videoList.forEach((vid) => { if (vid) counterDone++; });
+    try { // Resolver, TODO
+
+        if (user.isStudent)
+            userTargetCourse.videoList.forEach((vid) => { if (vid) counterDone++; });
+    } catch (error) {
+
+    }
 
     return targetCourse ? (
         <div className="courseOption" id={`course${targetCourse.id}`} onClick={() => { navigate(`/course?courseID=${targetCourse.id}`) }}>
@@ -50,7 +88,7 @@ function CourseImage({ targetCourse, user, navigate }) {
 function NewCourseImage({ user, id, navigate }) {
     if (user.isStudent) return;
 
-    return <div className="courseOption" id={`course${id}`} onClick={()=>{AddCourse(navigate)}}>
+    return <div className="courseOption" id={`course${id}`} onClick={() => { AddCourse(navigate) }}>
         <img src={require("../../assets/NewCourse.png")} alt="New Course" />
         <h4>Create Course</h4>
     </div>
@@ -63,18 +101,34 @@ function CourseList({ user, navigate, courseList }) {
             <br />
             <div className="listVideos">
                 {
-                    courseList.length <= 0 && user.isStudent?
+                    courseList.length <= 0 && user.isStudent ?
                         (<p>You haven't started a course yet</p>) : (courseList.map((course) => <CourseImage targetCourse={course} key={course.id} user={user} navigate={navigate} />))
                 }
-                <NewCourseImage user={user} id={user.courseList.length} navigate={navigate}/>
+                <NewCourseImage user={user} id={user.courseList.length} navigate={navigate} />
             </div>
         </div>
     )
+}
+function DivForm({ chosenField, userVal, updateUserVal }) {
+    return (
+        <div className={`div${chosenField.field}`} key={`div${chosenField.field}`}>
+            <label htmlFor={`lbl${chosenField.field}`}>{chosenField.display}</label>
+            <input type={chosenField.type} name={`lbl${chosenField.field}`} id={`lbl${chosenField.field}`} className={`lbl${chosenField.field}`} defaultValue={userVal[chosenField.property]} required onChange={(e) => { HandleUpdaveVal(e, userVal, chosenField.property, updateUserVal); }} disabled={chosenField.disabled} readOnly={chosenField.disabled} autoComplete="new-password" />
+        </div>
+    );
 }
 function AccountPage() {
     const navigate = useNavigate();
     let [courseList, setCourseList] = useState(null);
     const user = UserManager.getLocalUser();
+    const [userVal, updateUserVal] = useState({ ...user,password:"" });
+    const fields = {
+        Email: { field: "Email", display: "Email", property: "email", type: "text", disabled: true },
+        Password: { field: "Pass", display: "Password", property: "password", type: "password", disabled: false },
+        FirstName: { field: "Name", display: "First Name", property: "firstName", type: "text", disabled: false },
+        Surname: { field: "Surname", display: "Surname", property: "surname", type: "text", disabled: false },
+        Phone: { field: "Phone", display: "Phone", property: "phone", type: "text", disabled: false }
+    };
 
     useEffect(() => {
         document.title = 'My Account';
@@ -85,10 +139,10 @@ function AccountPage() {
         }
 
         const loadCourses = async () => {
-            
+
             if (!user.isStudent) {
                 var getAll = await CourseManager.getAll();
-                
+
                 if (!getAll) return;
                 setCourseList(getAll.data);
             }
@@ -96,13 +150,12 @@ function AccountPage() {
                 const idList = [];
                 user.courseList.forEach(course => idList.push(course.id));
                 var res;
-                if (idList.length > 0)
-                {
+                if (idList.length > 0) {
                     const list = await CourseManager.getByList(idList);
                     res = list.data;
                 }
                 else res = idList;
-                
+
                 setCourseList(res);
             }
 
@@ -118,37 +171,23 @@ function AccountPage() {
             <Header />
             <Banner />
             <section className="accountContent">
-                <form action="post" className="formAccount" onSubmit={(e) => { UpdateAccount(e, navigate) }} onChange={() => { }}>
+                <form action="post" className="formAccount" onSubmit={(e) => { UpdateAccount(e, userVal, navigate) }}>
                     <h2>{user.isStudent ? `${user.firstName}'s Account` : `Mr./Ms ${user.surname}'s Account`}</h2>
-                    <div>
-                        <label htmlFor="lblEmail">Email</label>
-                        <input type="text" name="lblEmail" id="lblEmail" className="lblEmail" readOnly disabled value={user.email} required onChange={() => { }} />
-                    </div>
-                    <div>
-                        <label htmlFor="lblPass">Password</label>
-                        <input type="password" name="lblPass" id="lblPass" className="lblPass" value={user.password} required onChange={() => { }} />
-                    </div>
+                    <h3>Confirm your login</h3>
+                    <DivForm chosenField={fields.Email} userVal={userVal} updateUserVal={updateUserVal} />
+                    <DivForm chosenField={fields.Password} userVal={userVal} updateUserVal={updateUserVal} />
                     <hr />
                     <h3>Informations</h3>
-                    <div>
-                        <label htmlFor="lblName">First Name</label>
-                        <input type="text" name="lblName" id="lblName" className="lblName" value={user.firstName} required onChange={() => { }} />
-                    </div>
-                    <div>
-                        <label htmlFor="lblSurname">Surname</label>
-                        <input type="text" name="lblSurname" id="lblSurname" className="lblSurname" value={user.surname} required onChange={() => { }} />
-                    </div>
-                    <div>
-                        <label htmlFor="lblPhone">Phone</label>
-                        <input type="text" name="lblPhone" id="lblPhone" className="lblPhone" value={user.phone} required onChange={() => { }} />
-                    </div>
+                    <DivForm chosenField={fields.FirstName} userVal={userVal} updateUserVal={updateUserVal} />
+                    <DivForm chosenField={fields.Surname} userVal={userVal} updateUserVal={updateUserVal} />
+                    <DivForm chosenField={fields.Phone} userVal={userVal} updateUserVal={updateUserVal} />
                     <div className="btOptions">
                         <button type="submit" className="btUpdate" >Update Account</button>
                         <button className="btDelete">Delete Account</button>
                     </div>
                 </form>
                 <br />
-                <CourseList user={user} navigate={navigate} courseList={courseList}/>
+                <CourseList user={user} navigate={navigate} courseList={courseList} />
             </section>
             <Footer />
         </>
