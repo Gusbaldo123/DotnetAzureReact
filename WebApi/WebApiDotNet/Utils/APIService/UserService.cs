@@ -37,11 +37,12 @@ namespace WebApiDotNet.Utils
                         {
                             id = cl.Id,
                             fkUserId = cl.FKUserId,
-                            completionList = cl.VideoList.Select(cc => new
+                            fkCourseId = cl.FKCourseId,
+                            videoList = cl.VideoList.Select(cc => new
                             {
                                 id = cc.Id,
                                 fkListId = cc.FKListId,
-                                isComplete = cc.IsWatched
+                                isWatched = cc.IsWatched
                             })
                         })
                     })
@@ -73,11 +74,12 @@ namespace WebApiDotNet.Utils
                         {
                             id = cl.Id,
                             fkUserId = cl.FKUserId,
-                            completionList = cl.VideoList.Select(cc => new
+                            fkCourseId = cl.FKCourseId,
+                            videoList = cl.VideoList.Select(cc => new
                             {
                                 id = cc.Id,
                                 fkListId = cc.FKListId,
-                                isComplete = cc.IsWatched
+                                isWatched = cc.IsWatched
                             })
                         })
                     })
@@ -111,7 +113,8 @@ namespace WebApiDotNet.Utils
                         courseList = u.CourseList.Select(cl => new
                         {
                             id = cl.Id,
-                            completionList = cl.VideoList.Select(cc => cc.IsWatched)
+                            fkCourseId = cl.FKCourseId,
+                            videoList = cl.VideoList.Select(cc => cc.IsWatched)
                         })
                     })
                     .FirstOrDefaultAsync();

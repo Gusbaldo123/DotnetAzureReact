@@ -17,6 +17,7 @@ namespace WebApiDotNet.Models
     {
         [JsonPropertyName("id")] public int? Id { get; set; }
         [JsonPropertyName("fkUserId")] public int? FKUserId { get; set; }
+        [JsonPropertyName("fkCourseId")] public int? FKCourseId { get; set; }
         [JsonPropertyName("videoList")] public List<UserVideo>? VideoList { get; set; }
         [JsonIgnore] public User? User { get; set; }
     }
@@ -24,7 +25,7 @@ namespace WebApiDotNet.Models
     {
         [JsonPropertyName("id")] public int? Id { get; set; }
         [JsonPropertyName("fkListId")] public int? FKListId { get; set; }
-        [JsonPropertyName("IsWatched")] public bool? IsWatched { get; set; }
+        [JsonPropertyName("isWatched")] public bool? IsWatched { get; set; }
         [JsonIgnore] public UserCourse? UserCourse { get; set; }
     }
 }
