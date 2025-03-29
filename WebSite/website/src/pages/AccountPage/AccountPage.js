@@ -19,17 +19,19 @@ export default AccountPage;
 async function UpdateAccount(e, userVal, navigate) {
     e.preventDefault();
 
-    var courseList = [...userVal.courseList];
+    const courseList = [...userVal.courseList];
 
     userVal.courseList = [];
-    courseList.forEach(element => {
-        if (!(userVal.courseList.find((course) => {
-            course.id = Number(course.id);
-            return Number(course.id) == Number(element.id);
-        }))) {
-            userVal.courseList.push(element);
-        }
-    });
+    if (courseList.length > 0)
+        courseList.forEach(Course => {
+            if (!(userVal.courseList.find((UserCourse) => Number(UserCourse.id) === Number(Course.id)))) {
+                if (Course.videoList && Course.videoList.length>0) {
+                    const videoList = [];
+                    Course.videoList.forEach(video => videoList.push({ isWatched: video }));
+                    userVal.courseList.push({ fkUserId:Number(userVal.id),fkCourseId: Number(Course.id), videoList: videoList })
+                }
+            }
+        });
 
     await UserManager.update({
         id: userVal.id,
@@ -41,7 +43,7 @@ async function UpdateAccount(e, userVal, navigate) {
         phone: userVal.phone,
         courseList: userVal.courseList
     });
-    
+
     await AuthManager.authenticate({ email: userVal.email, password: userVal.password });
 
     if (UserManager.getLocalUser()) {
@@ -60,7 +62,7 @@ function AddCourse(navigate) {
 function HandleUpdaveVal(e, userVal, property, updateUserVal) {
     const newUser = { ...userVal };
     newUser[property] = e.target.value;
-    updateUserVal(newUser);    
+    updateUserVal(newUser);
 }
 //#endregion
 
@@ -121,7 +123,7 @@ function AccountPage() {
     const navigate = useNavigate();
     let [courseList, setCourseList] = useState(null);
     const user = UserManager.getLocalUser();
-    const [userVal, updateUserVal] = useState({ ...user,password:"" });
+    const [userVal, updateUserVal] = useState({ ...user, password: "" });
     const fields = {
         Email: { field: "Email", display: "Email", property: "email", type: "text", disabled: true },
         Password: { field: "Pass", display: "Password", property: "password", type: "password", disabled: false },
