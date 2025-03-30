@@ -117,7 +117,7 @@ function CoursePage() {
       setTargetCourse(res.data);
 
       let defaultVideoList = {
-        id: courseId,
+        id: Number(courseId),
         videoList: res.data.videoList.map(() => false),
       };
       const userCourseIndex = user?.courseList?.findIndex((course) => Number(course.id) === Number(courseId));
@@ -125,8 +125,9 @@ function CoursePage() {
         setWatchedVidList(user.courseList[userCourseIndex]);
       else {
         setWatchedVidList(defaultVideoList);
-      }
-      if (user && !user.courseList.find(course => course.id === courseId)) {
+      }      
+      
+      if (user && !user.courseList.find(course => Number(course.fkCourseId) === Number(courseId))) {
         const newUser = { ...user };
         newUser.courseList.push(defaultVideoList);
         setUser(newUser);

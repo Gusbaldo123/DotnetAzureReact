@@ -24,15 +24,15 @@ async function UpdateAccount(e, userVal, navigate) {
     userVal.courseList = [];
     if (courseList.length > 0)
         courseList.forEach(Course => {
-            if (!(userVal.courseList.find((UserCourse) => Number(UserCourse.id) === Number(Course.id)))) {
-                if (Course.videoList && Course.videoList.length>0) {
+            const id = Course.id;
+            if (!(userVal.courseList.find((UserCourse) => Number(UserCourse.id) === id && typeof (UserCourse.id) != "number"))) {
+                if (Course.videoList && Course.videoList.length > 0 && id > 0) {
                     const videoList = [];
                     Course.videoList.forEach(video => videoList.push({ isWatched: video }));
-                    userVal.courseList.push({ fkUserId:Number(userVal.id),fkCourseId: Number(Course.id), videoList: videoList })
+                    userVal.courseList.push({ fkUserId: Number(userVal.id), fkCourseId: Number(id), videoList: videoList })
                 }
             }
         });
-
     await UserManager.update({
         id: userVal.id,
         email: userVal.email,
