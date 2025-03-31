@@ -19,6 +19,7 @@ namespace WebApiDotNet.Utils
                     .Where(u => u.Email.ToLower() == ObjParameter.Email.ToLower() && u.Password == ObjParameter.Password)
                     .Select(u => new
                     {
+                        
                         id = u.Id,
                         email = u.Email,
                         isStudent = u.IsStudent,
@@ -28,7 +29,11 @@ namespace WebApiDotNet.Utils
                         courseList = u.CourseList.Select(cl => new
                         {
                             id = cl.Id,
-                            completionList = cl.VideoList.Select(cc => cc.IsWatched)
+                            fkCourseId = cl.FKCourseId,
+                            videoList = cl.VideoList.Select(cc => new
+                            {
+                                isWatched = cc.IsWatched
+                            })
                         })
                     }).FirstOrDefaultAsync();
                 if (user == null)

@@ -191,6 +191,7 @@ namespace WebApiDotNet.Utils
                         var newCourse = new UserCourse
                         {
                             FKUserId = userToUpdate.Id,
+                            FKCourseId = course.FKCourseId,
                             VideoList = course.VideoList.Select(video => new UserVideo
                             {
                                 IsWatched = video.IsWatched
