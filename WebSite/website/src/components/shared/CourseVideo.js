@@ -12,6 +12,7 @@ function CheckBoxChange(event, user, watchedVidList, setWatchedVidList, targetCo
     if (!user) return;
     const newList = { ...watchedVidList };
     newList.videoList[i] = event.target.checked;
+    
     setWatchedVidList(newList);
     SetUserWatchedVidList(newList, user, targetCourse, setUser);
 }
@@ -19,18 +20,17 @@ function CheckBoxChange(event, user, watchedVidList, setWatchedVidList, targetCo
 function SetUserWatchedVidList(watchedVidList, user, targetCourse, setUser) {
     const updatedUser = { ...user };
     if (updatedUser.courseList) {
-        const courseIndex = updatedUser.courseList.findIndex(course => course.id === targetCourse.id);
+        const courseIndex = updatedUser.courseList.findIndex(course => Number(course.fkCourseId) === Number(targetCourse.id));
 
         if (courseIndex >= 0) {
-            updatedUser.courseList[courseIndex].videoList = watchedVidList;
+            updatedUser.courseList[courseIndex] = watchedVidList;
         } else {
             updatedUser.courseList.push({
-                id: targetCourse.id,
+                fkCourseId: targetCourse.id,
                 videoList: watchedVidList,
             });
         }
     }
-
     setUser(updatedUser);
     UserManager.setLocalUser(updatedUser);
 }

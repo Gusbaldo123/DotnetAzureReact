@@ -117,10 +117,11 @@ function CoursePage() {
       setTargetCourse(res.data);
 
       let defaultVideoList = {
-        id: Number(courseId),
+        fkCourseId: Number(courseId),
         videoList: res.data.videoList.map(() => false),
       };
-      const userCourseIndex = user?.courseList?.findIndex((course) => Number(course.id) === Number(courseId));
+      
+      const userCourseIndex = user?.courseList?.findIndex((course) => Number(course.fkCourseId) === Number(courseId));
       if (userCourseIndex >= 0)
         setWatchedVidList(user.courseList[userCourseIndex]);
       else {
@@ -131,6 +132,7 @@ function CoursePage() {
         const newUser = { ...user };
         newUser.courseList.push(defaultVideoList);
         setUser(newUser);
+        
       }
     };
 
@@ -148,6 +150,7 @@ function CoursePage() {
   if (!targetCourse) {
     return <div>Loading...</div>;
   }
+  
 
   return (
     <>
