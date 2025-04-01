@@ -159,8 +159,6 @@ function AccountPage() {
                 try {
                     if (idList.length > 0) {
                         const list = await CourseManager.getByList(idList);
-                        console.log(list);
-                        
                         res = list.data;
                     }
                     else res = idList;
