@@ -12,7 +12,6 @@ function CheckBoxChange(event, user, watchedVidList, setWatchedVidList, targetCo
     if (!user) return;
     const newList = { ...watchedVidList };
     newList.videoList[i] = event.target.checked;
-    
     setWatchedVidList(newList);
     SetUserWatchedVidList(newList, user, targetCourse, setUser);
 }
@@ -20,17 +19,18 @@ function CheckBoxChange(event, user, watchedVidList, setWatchedVidList, targetCo
 function SetUserWatchedVidList(watchedVidList, user, targetCourse, setUser) {
     const updatedUser = { ...user };
     if (updatedUser.courseList) {
-        const courseIndex = updatedUser.courseList.findIndex(course => Number(course.fkCourseId) === Number(targetCourse.id));
-
+        const courseIndex = updatedUser.courseList.findIndex(course => course.fkCourseId === targetCourse.id);
+        
         if (courseIndex >= 0) {
-            updatedUser.courseList[courseIndex] = watchedVidList;
+            updatedUser.courseList[courseIndex].videoList = watchedVidList.videoList;
         } else {
             updatedUser.courseList.push({
                 fkCourseId: targetCourse.id,
-                videoList: watchedVidList,
+                videoList: watchedVidList.videoList,
             });
         }
     }
+
     setUser(updatedUser);
     UserManager.setLocalUser(updatedUser);
 }
@@ -50,6 +50,7 @@ function DeleteVideo(id, user, index, videoList, updateVideoList) {
 function CourseVideo({ index, user, watchedVidList, setWatchedVidList, targetCourse, setUser, video, videoList, updateVideoList }) {
     const isStudent = user && user.isStudent;
     const isWatched = isStudent ? watchedVidList.videoList[index] : false;
+    
     return (
         <div key={index.toString()} className={`videoGroup group${index}`} id={`group${index}`}>
             <input

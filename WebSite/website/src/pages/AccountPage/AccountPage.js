@@ -152,12 +152,15 @@ function AccountPage() {
             else {
                 const idList = [];
                 user.courseList.forEach(course => {
+                    if(course.fkCourseId)
                     return idList.push(course.fkCourseId);
                 });
                 var res;
                 try {
                     if (idList.length > 0) {
                         const list = await CourseManager.getByList(idList);
+                        console.log(list);
+                        
                         res = list.data;
                     }
                     else res = idList;

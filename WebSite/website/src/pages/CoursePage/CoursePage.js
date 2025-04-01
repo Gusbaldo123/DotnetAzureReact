@@ -112,33 +112,42 @@ function CoursePage() {
   useEffect(() => {
     const loadCourse = async () => {
       const res = await CourseManager.get(courseId);
-
       if (!res) return;
+  
       setTargetCourse(res.data);
-
+  
       let defaultVideoList = {
         fkCourseId: Number(courseId),
         videoList: res.data.videoList.map(() => false),
       };
-      
-      const userCourseIndex = user?.courseList?.findIndex((course) => Number(course.fkCourseId) === Number(courseId));
-      if (userCourseIndex >= 0)
-        setWatchedVidList(user.courseList[userCourseIndex]);
-      else {
+  
+      if (!user) {
         setWatchedVidList(defaultVideoList);
-      }      
-      
-      if (user && !user.courseList.find(course => Number(course.fkCourseId) === Number(courseId))) {
-        const newUser = { ...user };
-        newUser.courseList.push(defaultVideoList);
-        setUser(newUser);
+        return;
+      } // logged user only
+  
+      if (!user.isStudent) {
+        setWatchedVidList(defaultVideoList);
+        return;
+      } // student user only
+  
+      const userCourseIndex = user.courseList.findIndex(course => Number(course.fkCourseId) === Number(courseId));
+  
+      if (userCourseIndex !== -1) {
+        setWatchedVidList(user.courseList[userCourseIndex]);
+      } else {
+        setWatchedVidList(defaultVideoList);
         
+        setUser(prevUser => ({
+          ...prevUser,
+          courseList: [...prevUser.courseList, defaultVideoList] 
+        }));
       }
     };
-
+  
     loadCourse();
-  }, [courseId, user]);
-
+  }, [courseId]);
+  
   useEffect(() => {
     if (targetCourse) {
       document.title = targetCourse.title;
@@ -150,7 +159,6 @@ function CoursePage() {
   if (!targetCourse) {
     return <div>Loading...</div>;
   }
-  
 
   return (
     <>
