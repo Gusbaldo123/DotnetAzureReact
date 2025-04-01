@@ -112,30 +112,35 @@ function CoursePage() {
   useEffect(() => {
     const loadCourse = async () => {
       const res = await CourseManager.get(courseId);
-
       if (!res) return;
+      
       setTargetCourse(res.data);
-
+      
       let defaultVideoList = {
         id: Number(courseId),
         videoList: res.data.videoList.map(() => false),
       };
-      const userCourseIndex = user?.courseList?.findIndex((course) => Number(course.id) === Number(courseId));
-      if (userCourseIndex >= 0)
-        setWatchedVidList(user.courseList[userCourseIndex]);
-      else {
+  
+      if (user) {
+        const userCourse = user.courseList.find(course => Number(course.fkCourseId) === Number(courseId));
+        
+        if (userCourse) {
+          setWatchedVidList(userCourse);
+        } else {
+          setWatchedVidList(defaultVideoList);
+          setUser(prevUser => ({
+            ...prevUser,
+            courseList: [...prevUser.courseList, defaultVideoList]
+          }));
+        }
+      } else {
         setWatchedVidList(defaultVideoList);
-      }      
-      
-      if (user && !user.courseList.find(course => Number(course.fkCourseId) === Number(courseId))) {
-        const newUser = { ...user };
-        newUser.courseList.push(defaultVideoList);
-        setUser(newUser);
       }
     };
-
+  
     loadCourse();
-  }, [courseId, user]);
+  }, [courseId]);
+  
 
   useEffect(() => {
     if (targetCourse) {
