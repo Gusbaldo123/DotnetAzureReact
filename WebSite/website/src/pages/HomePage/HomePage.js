@@ -9,6 +9,7 @@ import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
 import CourseManager from "../../utils/CourseManager.js";
+import userManager from "../../utils/UserManager.js";
 
 export default HomePage;
 

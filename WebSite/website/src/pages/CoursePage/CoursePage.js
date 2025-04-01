@@ -113,35 +113,41 @@ function CoursePage() {
     const loadCourse = async () => {
       const res = await CourseManager.get(courseId);
       if (!res) return;
-      
+  
       setTargetCourse(res.data);
-      
+  
       let defaultVideoList = {
-        id: Number(courseId),
+        fkCourseId: Number(courseId),
         videoList: res.data.videoList.map(() => false),
       };
   
-      if (user) {
-        const userCourse = user.courseList.find(course => Number(course.fkCourseId) === Number(courseId));
-        
-        if (userCourse) {
-          setWatchedVidList(userCourse);
-        } else {
-          setWatchedVidList(defaultVideoList);
-          setUser(prevUser => ({
-            ...prevUser,
-            courseList: [...prevUser.courseList, defaultVideoList]
-          }));
-        }
+      if (!user) {
+        setWatchedVidList(defaultVideoList);
+        return;
+      } // logged user only
+  
+      if (!user.isStudent) {
+        setWatchedVidList(defaultVideoList);
+        return;
+      } // student user only
+  
+      const userCourseIndex = user.courseList.findIndex(course => Number(course.fkCourseId) === Number(courseId));
+  
+      if (userCourseIndex !== -1) {
+        setWatchedVidList(user.courseList[userCourseIndex]);
       } else {
         setWatchedVidList(defaultVideoList);
+        
+        setUser(prevUser => ({
+          ...prevUser,
+          courseList: [...prevUser.courseList, defaultVideoList] 
+        }));
       }
     };
   
     loadCourse();
   }, [courseId]);
   
-
   useEffect(() => {
     if (targetCourse) {
       document.title = targetCourse.title;

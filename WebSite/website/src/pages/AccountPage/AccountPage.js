@@ -20,20 +20,20 @@ async function UpdateAccount(e, userVal, navigate) {
     e.preventDefault();
 
     const courseList = [...userVal.courseList];
-
-    userVal.courseList = [];
     if (courseList.length > 0)
         courseList.forEach(Course => {
-            const id = Course.id;
+            const id = Course.fkCourseId;
             if (!(userVal.courseList.find((UserCourse) => Number(UserCourse.id) === id && typeof (UserCourse.id) != "number"))) {
                 if (Course.videoList && Course.videoList.length > 0 && id > 0) {
                     const videoList = [];
                     Course.videoList.forEach(video => videoList.push({ isWatched: video }));
+                    userVal.courseList = [];
                     userVal.courseList.push({ fkUserId: Number(userVal.id), fkCourseId: Number(id), videoList: videoList })
                 }
             }
         });
-    await UserManager.update({
+    
+    const newUser = {
         id: userVal.id,
         email: userVal.email,
         password: userVal.password,
@@ -42,7 +42,8 @@ async function UpdateAccount(e, userVal, navigate) {
         surname: userVal.surname,
         phone: userVal.phone,
         courseList: userVal.courseList
-    });
+    };
+    await UserManager.update(newUser);
 
     await AuthManager.authenticate({ email: userVal.email, password: userVal.password });
 
@@ -68,11 +69,10 @@ function HandleUpdaveVal(e, userVal, property, updateUserVal) {
 
 //#region JSX
 function CourseImage({ targetCourse, user, navigate }) {
-    const userTargetCourse = user.courseList.find((courseArg) => courseArg.id == targetCourse.id);
     let counterDone = 0;
 
-    try { // Resolver, TODO
-
+    try {
+        const userTargetCourse = user.courseList.find((courseArg) => courseArg.fkCourseId == targetCourse.id);
         if (user.isStudent)
             userTargetCourse.videoList.forEach((vid) => { if (vid) counterDone++; });
     } catch (error) {
@@ -97,6 +97,7 @@ function NewCourseImage({ user, id, navigate }) {
 }
 function CourseList({ user, navigate, courseList }) {
     if (!courseList) return;
+
     return (
         <div className="videoListContainer">
             <h2>{user.isStudent ? "Your Progress" : "Posted Courses"}</h2>
@@ -150,17 +151,25 @@ function AccountPage() {
             }
             else {
                 const idList = [];
-                user.courseList.forEach(course => idList.push(course.id));
+                user.courseList.forEach(course => {
+                    if(course.fkCourseId)
+                    return idList.push(course.fkCourseId);
+                });
                 var res;
-                if (idList.length > 0) {
-                    const list = await CourseManager.getByList(idList);
-                    res = list.data;
+                try {
+                    if (idList.length > 0) {
+                        const list = await CourseManager.getByList(idList);
+                        console.log(list);
+                        
+                        res = list.data;
+                    }
+                    else res = idList;
+                } catch (error) {
+                    res = idList;
                 }
-                else res = idList;
 
                 setCourseList(res);
             }
-
         };
 
         loadCourses();
