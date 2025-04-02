@@ -64,7 +64,7 @@ function LogInForm({ navigate }) {
         <button type="submit">LogIn</button>
         <Link className="btForgot" to={{ pathname: "/Recover" }}>Forgot your password?</Link>
         <Link className="btSignUp" to={{ pathname: "/login", search: "?form=signUp" }}>Don't have an account?</Link>
-      </form>\
+      </form>
     </>
   );
 }
@@ -108,7 +108,7 @@ function LoginPage() {
 
   const user = UserManager.getLocalUser();
   useEffect(() => {
-    document.title = isLoginPage ? "Login" : "Sign In";
+    document.title = `Skillhub - ${isLoginPage ? "Login" : "Sign In"}`;
 
     if (user) navigate("/Account");
   }, [navigate]);

@@ -19,7 +19,7 @@ function RecoverPasswordPage()
     const navigate = useNavigate();
     const user = UserManager.getLocalUser();
     useEffect(() => {
-        document.title = "Recover Password";
+        document.title = "Skillhub - Recover Password";
 
         if(user) navigate("/Home");
       }, [navigate]);

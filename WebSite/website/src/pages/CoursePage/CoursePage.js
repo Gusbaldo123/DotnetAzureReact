@@ -150,7 +150,7 @@ function CoursePage() {
   
   useEffect(() => {
     if (targetCourse) {
-      document.title = targetCourse.title;
+      document.title = `Skillhub - ${targetCourse.title}`;
       updateImg64(targetCourse.imageBase64);
       updateVideoList(targetCourse.videoList);
     }

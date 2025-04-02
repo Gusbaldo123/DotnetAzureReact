@@ -5,14 +5,18 @@ class ApiManager {
   }
   async fetchAPI(URL,body) {
     
-    return await fetch(URL, {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
+    try {
+      return await fetch(URL, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+    } catch (error) {
+      return;
+    }
   }
   //#endregion
 }

@@ -8,6 +8,7 @@ class BaseManager {
         this.baseURL = `${ApiManager.BASE_URL}${baseURL}`;
     }
     async getDataFromJSON(response) {
+        if(!response) return null;
         if (!response.ok) return null;
         const resJSON = await response.json();
         

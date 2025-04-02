@@ -121,6 +121,10 @@
     width: 100%;
 }
 .videoListContainer .courseOption img{
+    display: inline-block;
+    border: 1px solid white;
+    border-radius: 15px;
+    align-content: center;
     margin: auto;
     width: 95%;
     aspect-ratio: 5/3;

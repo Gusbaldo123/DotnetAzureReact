@@ -134,7 +134,7 @@ function AccountPage() {
     };
 
     useEffect(() => {
-        document.title = 'My Account';
+        document.title = 'Skillhub - My Account';
 
         if (!user) {
             navigate("/login?form=signIn");
