@@ -32,7 +32,7 @@ async function UpdateAccount(e, userVal, navigate) {
                 }
             }
         });
-    
+
     const newUser = {
         id: userVal.id,
         email: userVal.email,
@@ -51,6 +51,26 @@ async function UpdateAccount(e, userVal, navigate) {
         navigate("/Home");
     }
 }
+
+async function DeleteAccount(user, navigate) {
+    if (!user) return;
+    const confirmation = window.prompt("To confirm, type DELETE");
+
+    if (confirmation.toUpperCase().replaceAll(" ", "").replaceAll('\t', "") === "DELETE") {
+        try {
+            await UserManager.delete(Number(user.id));
+            alert("Deleted Account");
+
+            UserManager.setLocalUser(null);
+            navigate("/Home");
+        } catch {
+            alert("Found an error");
+        }
+    }
+    else
+        alert("Wrong confirmation text");
+}
+
 function AddCourse(navigate) {
     CourseManager.add({
         "title": "New Course",
@@ -152,8 +172,8 @@ function AccountPage() {
             else {
                 const idList = [];
                 user.courseList.forEach(course => {
-                    if(course.fkCourseId)
-                    return idList.push(course.fkCourseId);
+                    if (course.fkCourseId)
+                        return idList.push(course.fkCourseId);
                 });
                 var res;
                 try {
@@ -192,7 +212,7 @@ function AccountPage() {
                     <DivForm chosenField={fields.Phone} userVal={userVal} updateUserVal={updateUserVal} />
                     <div className="btOptions">
                         <button type="submit" className="btUpdate" >Update Account</button>
-                        <button className="btDelete">Delete Account</button>
+                        <button onClick={() => { DeleteAccount(user, navigate) }} className="btDelete">Delete Account</button>
                     </div>
                 </form>
                 <br />
