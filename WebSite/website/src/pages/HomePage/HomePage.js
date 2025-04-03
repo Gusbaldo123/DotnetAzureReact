@@ -9,30 +9,46 @@ import Footer from "../../components/layout/Footer";
 import Banner from "../../components/shared/Banner";
 
 import CourseManager from "../../utils/CourseManager.js";
-import userManager from "../../utils/UserManager.js";
 
 export default HomePage;
 
 //#endregion
 
 //#region Handlers
-const NextCourse = (setCurrentIndex, CourseList) => {
-  setCurrentIndex((prevIndex) => (prevIndex + 1) % CourseList.length);
+const NextCourse = (setCurrentIndex, courseList) => {
+  setCurrentIndex((prevIndex) => (prevIndex + 1) % courseList.length);
 };
 
-const PreviousCourse = (setCurrentIndex, CourseList) => {
-  setCurrentIndex((prevIndex) => (prevIndex - 1 + CourseList.length) % CourseList.length);
+const PreviousCourse = (setCurrentIndex, courseList) => {
+  setCurrentIndex((prevIndex) => (prevIndex - 1 + courseList.length) % courseList.length);
 };
+
+function FilterCarroussel(filter, courseList, setFilteredCourseList)
+{
+  if(!filter || filter === "")
+  {
+    setFilteredCourseList(courseList);
+    return;
+  }
+
+  var newList = [...courseList];
+  newList = newList.filter((course)=>ClearText(course.title).includes(ClearText(filter)));
+  setFilteredCourseList(newList);
+}
+
+const ClearText = (text) => {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(/ç/g, "c").replaceAll(/Ç/g, "C").replaceAll("%20"," ").toLowerCase();
+};;
 //#endregion
 
 //#region JSX
-function CarrousselCourses({ CourseList, navigate }) {
+function CarrousselCourses({ courseList, navigate }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const visibleItems = [
-    CourseList[currentIndex],
-    CourseList[(currentIndex + 1) % CourseList.length],
-    CourseList[(currentIndex + 2) % CourseList.length],
+    courseList[currentIndex],
+    courseList[(currentIndex + 1) % courseList.length],
+    courseList[(currentIndex + 2) % courseList.length],
   ];
   function Wrapper({ visibleItems, navigate }) {
 
@@ -62,11 +78,11 @@ function CarrousselCourses({ CourseList, navigate }) {
 
   return (
     <div className="contentCourseCaroussel">
-      <button onClick={() => PreviousCourse(setCurrentIndex, CourseList)} className="contentCoursePrevious btCourses">
+      <button onClick={() => PreviousCourse(setCurrentIndex, courseList)} className="contentCoursePrevious btCourses">
         <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 4l8 8-8 8" /></svg>
       </button>
       <Wrapper visibleItems={visibleItems} navigate={navigate} />
-      <button onClick={() => NextCourse(setCurrentIndex, CourseList)} className="contentCourseNext btCourses">
+      <button onClick={() => NextCourse(setCurrentIndex, courseList)} className="contentCourseNext btCourses">
         <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M8 4l8 8-8 8" /></svg>
       </button>
     </div>
@@ -75,7 +91,9 @@ function CarrousselCourses({ CourseList, navigate }) {
 
 function HomePage() {
 
-  const [CourseList, setCourseList] = useState(null);
+  const [courseList, setCourseList] = useState(null);
+  const [filteredCourseList, setFilteredCourseList] = useState(null);
+  const [filter, setFilter] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,14 +103,15 @@ function HomePage() {
       const res = await CourseManager.getAll();
       if (!res) return;
       setCourseList(res.data);
+      setFilteredCourseList(res.data);
     };
 
     loadCourses();
   }, []);
 
-  if (!CourseList)
+  if (!courseList)
     return <div className="homepage-loading">Loading...</div>;
-
+  
   return (
     <>
       <Header />
@@ -100,10 +119,10 @@ function HomePage() {
         <Banner />
         <section className="content">
           <div className="contentCourseSearch">
-            <input type="text" id="contentCourseText" className="contentCourseText" placeholder="What do you want to learn?" />
-            <button>Search</button>
+            <input type="text" id="contentCourseText" className="contentCourseText" placeholder="What do you want to learn?" onChange={(e)=>setFilter(e.target.value)}/>
+            <button onClick={()=>{FilterCarroussel(filter,courseList,setFilteredCourseList)}}>Search</button>
           </div>
-          <CarrousselCourses CourseList={CourseList} navigate={navigate} />
+          <CarrousselCourses courseList={filteredCourseList} navigate={navigate} />
         </section>
       </main>
       <Footer />
