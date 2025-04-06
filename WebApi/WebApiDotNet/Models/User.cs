@@ -11,6 +11,7 @@ namespace WebApiDotNet.Models
         [JsonPropertyName("firstName")] public string? FirstName { get; set; }
         [JsonPropertyName("surname")] public string? Surname { get; set; }
         [JsonPropertyName("phone")] public string? Phone { get; set; }
+        [JsonPropertyName("isAuthenticated")] public bool? IsAuthenticated { get; set; }
         [JsonPropertyName("courseList")] public List<UserCourse>? CourseList { get; set; }
     }
     public class UserCourse

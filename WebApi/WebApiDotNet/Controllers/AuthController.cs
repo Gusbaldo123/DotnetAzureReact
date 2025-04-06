@@ -17,7 +17,7 @@ namespace WebApiDotNet.Controllers
 
             var service = new AuthenticationService(_tEntity, dbContext);
 
-            return Ok(await service.Authenticate());
+            return Ok(await service.AuthUser());
         }
     }
 }

@@ -11,8 +11,6 @@ class BaseManager {
         if(!response) return null;
         if (!response.ok) return null;
         const resJSON = await response.json();
-        
-        if (!resJSON.success) return null;
         return resJSON;
     }
     fetchData = async (dataParam) =>
