@@ -41,6 +41,8 @@ namespace WebApiDotNet.Utils
                 entity.Property(u => u.FirstName).HasMaxLength(255);
                 entity.Property(u => u.Surname).HasMaxLength(255);
                 entity.Property(u => u.Phone).HasMaxLength(255);
+                entity.Property(u => u.IsAuthenticated).IsRequired();
+                entity.Property(u=>u.AuthToken).HasMaxLength(60);
                 entity.HasMany(u => u.CourseList)
                       .WithOne(uc => uc.User)
                       .HasForeignKey(uc => uc.FKUserId)

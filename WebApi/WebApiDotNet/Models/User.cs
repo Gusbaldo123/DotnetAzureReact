@@ -13,6 +13,8 @@ namespace WebApiDotNet.Models
         [JsonPropertyName("phone")] public string? Phone { get; set; }
         [JsonPropertyName("isAuthenticated")] public bool? IsAuthenticated { get; set; }
         [JsonPropertyName("courseList")] public List<UserCourse>? CourseList { get; set; }
+        [JsonIgnore] public string? AuthToken { get; set; }
+
     }
     public class UserCourse
     {

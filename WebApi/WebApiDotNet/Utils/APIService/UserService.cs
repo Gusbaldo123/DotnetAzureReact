@@ -5,7 +5,12 @@ namespace WebApiDotNet.Utils
 {
     public class UserService : CrudApiService<User>
     {
-        public UserService(User? _ObjParameter, ApplicationContext _dbContext) : base(_ObjParameter, _dbContext) { }
+        private readonly IConfiguration _configuration;
+        public UserService(User? _ObjParameter, ApplicationContext _dbContext, IConfiguration configuration)
+        : base(_ObjParameter, _dbContext)
+        {
+            _configuration = configuration;
+        }
         #region Handlers
         public override bool isDataFilled(User? _user) =>
         _user != null &&
@@ -134,14 +139,28 @@ namespace WebApiDotNet.Utils
             if (!isDataFilled(ObjParameter))
                 return GetErrorReponse("Parameter not entirely filled");
 
+            if (ObjParameter.Email == null)
+                return GetErrorReponse("Email must be filled");
+
             try
             {
+                Mail mail = new Mail();
+                mail.Email = ObjParameter.Email;
+                MailService mailService = new MailService(mail, dbContext, _configuration);
+                if (await mailService.CheckUsableEmail() == false)
+                    return GetErrorReponse(string.Format("\"{0}\" is already created, try logging in or recover password", mail.Email));
+
                 ObjParameter.Id = default;
                 ObjParameter.CourseList = new List<UserCourse>();
+                ObjParameter.AuthToken = Guid.NewGuid().ToString();
+                ObjParameter.IsAuthenticated = false;
+
                 await dbContext.Users.AddAsync(ObjParameter);
                 await dbContext.SaveChangesAsync();
 
-                return GetDataResponse("User created successfully");
+                await mailService.SendAuthEmail();
+
+                return GetDataResponse(string.Format("User created successfully, check \"{0}\" to authenticate your account", mail.Email));
             }
             catch (Exception ex)
             {
