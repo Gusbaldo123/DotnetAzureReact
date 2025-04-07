@@ -8,6 +8,8 @@ namespace WebApiDotNet.Controllers
     [ApiController]
     public class UserController : CRUDController<User, UserService>
     {
-        public UserController(ApplicationContext _dbContext) : base(_dbContext) { }
+        protected IConfiguration _configuration;
+        public UserController(ApplicationContext _dbContext, IConfiguration configuration) : base(_dbContext) { _configuration = configuration; }
+        protected override UserService CreateInstance(User? _tEntity) => new UserService(_tEntity, dbContext, _configuration);
     }
 }

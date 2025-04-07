@@ -8,7 +8,8 @@ namespace WebApiDotNet.Models
     [Route("api/[controller]")]
     public class CRUDController<TEntity, TService> : BaseController<TEntity> where TService : CrudApiService<TEntity>
     {
-        public CRUDController(ApplicationContext _dbContext) : base(_dbContext) { }
+        protected virtual TService CreateInstance(TEntity? _tEntity)=> (TService)Activator.CreateInstance(typeof(TService), _tEntity, dbContext)!;
+        public CRUDController(ApplicationContext _dbContext) : base(_dbContext){}
         private object? GetDataParam(CRUDAction _action)
         {
             try
@@ -23,10 +24,10 @@ namespace WebApiDotNet.Models
                 return null;
             }
         }
-        RestResponse InvalidParameters(string _reason)=> new RestResponse() { Success = false, Data = _reason };
+        RestResponse InvalidParameters(string _reason) => new RestResponse() { Success = false, Data = _reason };
         protected virtual async Task<RestResponse> PostActions(CRUDAction _action, TEntity? _tEntity)
         {
-            var service = (TService)Activator.CreateInstance(typeof(TService), _tEntity, dbContext)!;
+            var service = CreateInstance(_tEntity);
             if (_action == null || _action.Action == null)
                 return service.None();
 
@@ -40,12 +41,12 @@ namespace WebApiDotNet.Models
                 _ => service.None()
             };
         }
-        [HttpPost("idlist")] 
+        [HttpPost("idlist")]
         public async Task<IActionResult> GetByIdList([FromBody] int[] _idList)
         {
             if (_idList == null || _idList.Length == 0)
                 return Ok(new RestResponse() { Success = false, Data = "Invalid id list" });
-            
+
             var service = (TService)Activator.CreateInstance(typeof(TService), null, dbContext)!;
 
             return Ok(await service.SelectByIdList(_idList));
@@ -55,13 +56,13 @@ namespace WebApiDotNet.Models
         {
             if (_action == null)
                 return Ok(InvalidParameters("Action must not be null"));
-            
+
             object? objParam = GetDataParam(_action);
-            if(objParam == null)
+            if (objParam == null)
                 return Ok(InvalidParameters("Data Param must not be null"));
-            
+
             TEntity tEntity = (TEntity)objParam;
-            
+
             bool isActionImpossible = tEntity == null &&
             _action.Action != null &&
             (CRUDActionType)_action.Action != CRUDActionType.SELECT_ALL;
