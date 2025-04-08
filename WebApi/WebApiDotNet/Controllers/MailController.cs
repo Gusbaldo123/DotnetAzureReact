@@ -27,12 +27,13 @@ namespace WebApiDotNet.Controllers
                 return Ok(response);
         }
         [HttpPost]
-        public async Task<IActionResult> RecoverPassword(string email)
+        public async Task<IActionResult> RecoverPassword([FromBody] Mail request)
         {
             var mailService = new MailService(null, dbContext, _configuration);
-            RestResponse response = await mailService.RecoverPassword(email);
+            RestResponse response = await mailService.RecoverPassword(request.Email);
             return Ok(response);
         }
+
     }
 
 }
