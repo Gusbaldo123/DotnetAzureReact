@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import UserManager from "../../utils/UserManager";
+import RecoverPasswordManager from "../../utils/RecoverPasswordManager";
 
 import "./RecoverPasswordPage.css"
 
@@ -14,15 +15,18 @@ export default RecoverPasswordPage;
 //#endregion
 
 //#region Handlers
-function Recover(e, setResponse) {
+async function Recover(e, setResponse, isProcessing, setProcess) {
     e.preventDefault();
+    if (isProcessing) return;
+    setProcess(true);
     const email = e.target.elements.emailRecover.value.toLowerCase();
-    SendMail(email)
+    await SendMail(email)
     setResponse(`Mail sent to '${email}'(May be on spam!)`);
+    setProcess(false);
 }
-function SendMail(email)
-{
-    
+async function SendMail(email) {
+    const res = await RecoverPasswordManager.sendMail(email);
+    alert(res);
 }
 //#endregion
 
@@ -31,6 +35,7 @@ function RecoverPasswordPage() {
     const navigate = useNavigate();
     const user = UserManager.getLocalUser();
     const [response, setResponse] = useState(null);
+    const [isProcessing, setProcess] = useState(false);
     useEffect(() => {
         document.title = "Skillhub - Recover Password";
 
@@ -42,7 +47,7 @@ function RecoverPasswordPage() {
         <Banner />
         <section className="RecoverPasswordContent">
             <h2>Recover Password</h2>
-            <form action="" method="post" onSubmit={(e)=>Recover(e,setResponse)}>
+            <form action="" method="post" onSubmit={async (e) => await Recover(e, setResponse, isProcessing, setProcess)}>
                 <label htmlFor="emailRecover">Email: </label>
                 <input type="email" name="emailRecover" id="emailRecover" />
                 <input type="submit" value="Confirm" />

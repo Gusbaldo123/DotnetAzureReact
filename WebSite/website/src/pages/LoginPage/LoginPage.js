@@ -1,5 +1,5 @@
 //#region imports
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 
 import "./LoginPage.css";
@@ -28,10 +28,14 @@ async function SubmitLoginForm(event, navigate) {
     navigate("/Home");
   }
 }
-async function SubmitSignUpForm(event, navigate) {
+async function SubmitSignUpForm(event, setLoginPage, isProcessing, setProcess) {
   event.preventDefault();
+
+  if (isProcessing) return;
+
+  setProcess(true);
   const el = event.target.elements;
-  await UserManager.add({
+  const res = await UserManager.add({
     email: el.lblEmail.value.toLowerCase(),
     password: el.lblPass.value,
     isStudent: true,
@@ -40,22 +44,23 @@ async function SubmitSignUpForm(event, navigate) {
     phone: el.lblPhone.value,
     courseList: []
   });
-  await AuthManager.authenticate({ email: el.lblEmail.value.toLowerCase(), password: el.lblPass.value });
-  if (UserManager.getLocalUser()) {
-    navigate("/Home");
+
+  if (window.confirm(res.data)) {
+    setLoginPage(true);
   }
+  setProcess(false);
 }
 //#endregion
 
 //#region JSX
-function LogInForm({ navigate }) {
+function LogInForm({ navigate, setLoginPage }) {
   return (
     <>
       <form className="formLogin" onSubmit={(e) => SubmitLoginForm(e, navigate)}>
         <h2>Log In</h2>
         <div>
           <label htmlFor="lblEmail">Email</label>
-          <input type="text" name="lblEmail" id="lblEmail" className="lblEmail" required />
+          <input type="text" name="lblEmail" id="lblEmail" className="lblEmail" placeholder="email@email.com" required />
         </div>
         <div>
           <label htmlFor="lblPass">Password</label>
@@ -63,15 +68,17 @@ function LogInForm({ navigate }) {
         </div>
         <button type="submit">LogIn</button>
         <Link className="btForgot" to={{ pathname: "/Recover" }}>Forgot your password?</Link>
-        <Link className="btSignUp" to={{ pathname: "/login", search: "?form=signUp" }}>Don't have an account?</Link>
+        <Link className="btSignUp" onClick={() => { setLoginPage(false); }}>Don't have an account?</Link>
       </form>
     </>
   );
 }
-function SignUpForm({ navigate }) {
+function SignUpForm({ setLoginPage }) {
+
+  const [isProcessing, setProcess] = useState(false);
   return (
     <>
-      <form action="post" className="formSignUp" onSubmit={(e) => { SubmitSignUpForm(e, navigate) }}>
+      <form action="post" className="formSignUp" onSubmit={(e) => { SubmitSignUpForm(e, setLoginPage, isProcessing, setProcess) }}>
         <h2>SignUp</h2>
         <div>
           <label htmlFor="lblEmail">Email</label>
@@ -96,7 +103,7 @@ function SignUpForm({ navigate }) {
           <input type="text" name="lblPhone" id="lblPhone" className="lblPhone" placeholder="+000 000 000" required />
         </div>
         <button type="submit">Register</button>
-        <Link className="btSignIn" to={{ pathname: "/login", search: "?form=signIn" }}>Already have an account?</Link>
+        <Link className="btSignIn" onClick={() => { setLoginPage(true); }}>Already have an account?</Link>
       </form>
     </>
   );
@@ -104,14 +111,14 @@ function SignUpForm({ navigate }) {
 function LoginPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const isLoginPage = searchParams.get("form") === "signIn";
+  const [isLoginPage, setLoginPage] = useState(searchParams.get("form") === "signIn");
 
   const user = UserManager.getLocalUser();
   useEffect(() => {
     document.title = `Skillhub - ${isLoginPage ? "Login" : "Sign In"}`;
 
     if (user) navigate("/Account");
-  }, [navigate]);
+  }, [navigate, user, isLoginPage]);
 
   return (
     <>
@@ -119,7 +126,7 @@ function LoginPage() {
       <main>
         <Banner />
         <section className="loginContent">
-          {isLoginPage ? <LogInForm navigate={navigate} /> : <SignUpForm navigate={navigate} />}
+          {isLoginPage ? <LogInForm navigate={navigate} setLoginPage={setLoginPage} /> : <SignUpForm setLoginPage={setLoginPage} />}
         </section>
       </main>
       <Footer />
