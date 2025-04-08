@@ -103,6 +103,7 @@ function SignUpForm({ setLoginPage }) {
           <input type="text" name="lblPhone" id="lblPhone" className="lblPhone" placeholder="+000 000 000" required />
         </div>
         <button type="submit">Register</button>
+        <Link className="btForgot" to={{ pathname: "/Recover" }}>Forgot your password?</Link>
         <Link className="btSignIn" onClick={() => { setLoginPage(true); }}>Already have an account?</Link>
       </form>
     </>

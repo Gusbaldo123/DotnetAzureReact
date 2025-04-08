@@ -1,6 +1,6 @@
 //#region imports
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 import UserManager from "../../utils/UserManager";
 import RecoverPasswordManager from "../../utils/RecoverPasswordManager";
@@ -52,6 +52,8 @@ function RecoverPasswordPage() {
                 <input type="email" name="emailRecover" id="emailRecover" />
                 <input type="submit" value="Confirm" />
             </form>
+            <Link className="btSignIn" to={{ pathname: "/login", search: "?form=signIn" }}>New account</Link>
+            <Link className="btSignUp" to={{ pathname: "/login", search: "?form=signUp" }}>Log in</Link>
             <br />
             <p className="responseRecover">{response}</p>
         </section>
