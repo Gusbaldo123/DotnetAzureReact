@@ -1,65 +1,69 @@
-.siteFooter{
-  margin: 5%;
-  background-color: #1E1E1E;
-  justify-content: space-between;
-}
-.siteFooter hr{
-  border: 0;
-  height: 1px;
-  background: #333;
-}
 
-.footerInformations{
-  display: flex;
-}
-.footerInformations .footerSocialMedia{
-  margin: 2%;
-  width: 20%;
-}
-.footerInformations .footerSocialMedia .footerSocialMediaLogo{
-  width: 100%;
-}
-
-.footerInformations .footerSocialMedia .footerSocialMediaLogo a{
-  display: inline-block;
-  border-radius: 50%;
-  padding: 0;
-  border: 2px solid transparent;
-  width: 32px;
-  height: 32px;
-  background-color: transparent;
-}
-.footerInformations .footerSocialMedia .footerSocialMediaLogo a:hover{
-  border: 2px solid white;
-}
-.footerInformations .footerSocialMedia .footerSocialMediaLogo  img{
-  padding: 0;
-  border: 0;
-  width: 32px;
-  height: 32px;
-  background-color: transparent;
-}
-
-.footerInformations .footerSocialMedia .footerSocialMediaButtons{
-  display: inline-block;
-  margin-top:15px;
-}
-.footerInformations .footerSocialMedia .footerSocialMediaButtons button{
-  margin-right: 5px;
-  border-radius: 6px;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  border: 0;
-}
-.footerInformations .footerContact{
-  color: white;
-  width: 20%;
-}
-.footerInformations .footerContact h4{
-  height: 32px;
-  margin: 0;
-}
-.footerInformations .footerContact p{
-  margin-top: 25px;
+@media(min-width:769px)
+{
+  .siteFooter{
+    margin: 5%;
+    background-color: #1E1E1E;
+    justify-content: space-between;
+  }
+  .siteFooter hr{
+    border: 0;
+    height: 1px;
+    background: #333;
+  }
+  
+  .footerInformations{
+    display: flex;
+  }
+  .footerInformations .footerSocialMedia{
+    margin: 2%;
+    width: 20%;
+  }
+  .footerInformations .footerSocialMedia .footerSocialMediaLogo{
+    width: 100%;
+  }
+  
+  .footerInformations .footerSocialMedia .footerSocialMediaLogo a{
+    display: inline-block;
+    border-radius: 50%;
+    padding: 0;
+    border: 2px solid transparent;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+  }
+  .footerInformations .footerSocialMedia .footerSocialMediaLogo a:hover{
+    border: 2px solid white;
+  }
+  .footerInformations .footerSocialMedia .footerSocialMediaLogo  img{
+    padding: 0;
+    border: 0;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+  }
+  
+  .footerInformations .footerSocialMedia .footerSocialMediaButtons{
+    display: inline-block;
+    margin-top:15px;
+  }
+  .footerInformations .footerSocialMedia .footerSocialMediaButtons button{
+    margin-right: 5px;
+    border-radius: 6px;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    border: 0;
+  }
+  .footerInformations .footerContact{
+    color: white;
+    width: 20%;
+  }
+  .footerInformations .footerContact h4{
+    height: 32px;
+    margin: 0;
+  }
+  .footerInformations .footerContact p{
+    margin-top: 25px;
+  }
 }
