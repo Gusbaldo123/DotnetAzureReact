@@ -1,17 +1,16 @@
-@media (min-width:769px) 
+@media (max-width:768px)
 {
+    .accountContent
+    {
+        width: 80%;
+        margin: auto;
+    }
     .accountContent .formAccount{
         background-color: #003121;
         border-radius: 25px 25px 0 0;
         padding: 25px;
         display: block;
         justify-content: center;
-        margin: auto;
-        width: 30%;
-    }
-    .accountContent .formAccount{
-        justify-content: center;
-        display:block;
     }
     .accountContent .formAccount .lblEmail{
         color: white;
@@ -26,13 +25,13 @@
     .accountContent .formAccount h2{
         width: 100%;
         text-align: center;
-        font-size: 3em;
+        font-size: 1.7em;
         color:white;
     }
     .accountContent .formAccount h3{
         width: 100%;
         text-align: center;
-        font-size: 1.5em;
+        font-size: 1.2em;
         color:white;
     }
     .accountContent .formAccount *{
@@ -57,10 +56,10 @@
         border: 2px solid white;
         border-radius: 20px;
         padding: 5px;
-        width: 45%;
-        margin: 5% auto;
+        width: 50%;
+        margin: auto;
         font-size: larger;
-        font-size: 0.90em;
+        font-size: 1em;
     }
     .accountContent .formAccount button:hover{
         background-color: #02542D;
@@ -70,7 +69,7 @@
     }
     .accountContent .formAccount .btOptions{
         display: flex;
-        width: 70%;
+        width: 100%;
     }
     .accountContent .formAccount .btDelete{
         border: 2px solid red;
@@ -88,30 +87,26 @@
         padding: 25px;
         justify-content: center;
         margin: 2% auto;
-        width: 60%;
         height:2%;
         color: white;
         text-align: center;
     }
     .videoListContainer h2{
-        font-size: 2em;
+        font-size: 1.7em;
         font-weight: bold;
+        margin: auto;
     }
     .videoListContainer .listVideos {
-        display: flex;
+        display: block;
         justify-content: center;
-        flex-wrap: wrap;
         gap: 10px;
         border-top: 1px solid gray;
         padding: 2%;
     }
     .videoListContainer .courseOption {
         border: 2px solid transparent;
-        flex: 1 1 18%;
-        max-width: 18%;
         box-sizing: border-box;
-        height: auto;
-        margin: 5px 0;
+        height: fit-content;
         border-radius: 5%;
     }
     .videoListContainer .courseOption:hover {
@@ -128,11 +123,11 @@
         border-radius: 15px;
         align-content: center;
         margin: auto;
-        width: 95%;
+        width: 60vw;
         aspect-ratio: 5/3;
     }
     .videoListContainer .courseOption h4{
-        margin: 0 auto;
+        margin: 0 auto 1em auto;
         width: 95%;
         color: white;
     }

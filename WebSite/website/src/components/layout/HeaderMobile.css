@@ -70,7 +70,7 @@
     color: #303030;
   }
 
-  .navHeader .navHeaderButtons a {
+  .navHeader .navHeaderButtons a,.navHeader .navHeaderButtons button {
     width: 45%;
     margin: auto 0;
     text-align: center;

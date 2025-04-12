@@ -1,13 +1,13 @@
-@media(min-width:769px)
+@media(max-width:768px)
 {
     .loginContent {
         background-color: #003121;
         border-radius: 25px 25px 0 0;
-        padding: 25px;
+        padding: 5px;
         display: block;
         justify-content: center;
         margin: auto;
-        width: 30%;
+        width: 80%;
     }
     .formLogin, .formSignUp{
         justify-content: center;
@@ -22,8 +22,9 @@
     }
     .formLogin h2,.formSignUp h2{
         width: 100%;
+        margin: 10px 0;
         text-align: center;
-        font-size: 3em;
+        font-size: 2em;
         color:white;
     }
     .formSignUp h3{

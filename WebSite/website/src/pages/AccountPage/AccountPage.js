@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./AccountPage.css";
+import "./AccountMobilePage.css";
 
 import Header from "../../components/layout/Header.js";
 import Footer from "../../components/layout/Footer.js";

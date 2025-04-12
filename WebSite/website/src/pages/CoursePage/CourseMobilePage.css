@@ -1,8 +1,8 @@
-@media(min-width:769px) {
+@media (max-width:769px) {
     .courseContent {
         background-color: #003121;
         border-radius: 25px 25px 0 0;
-        padding: 25px;
+        padding: 5px;
         display: block;
         justify-content: center;
         margin: auto;
@@ -10,7 +10,7 @@
     }
 
     .courseContent article {
-        display: flex;
+        display: block;
         color: white;
         font-size: 1.2em;
     }
@@ -23,7 +23,7 @@
     .courseContent .img-content {
         width: auto;
         max-width: 300px;
-        padding: 15px;
+        padding: 5px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -58,37 +58,54 @@
         border-radius: 5%;
     }
 
+    .courseContent .deleteCourse{
+        margin: auto;
+        width: 100%;
+    }
     .courseContent .deleteCourse button {
         background-color: transparent;
         border: 1px solid red;
         border-radius: 5px;
         color: white;
+        font-size: 1em;
+        padding: 5px;
     }
 
     .courseContent .videoInfo {
         width: 95%;
+        padding: 15px 0;
+        display: flex;
+        flex-wrap: wrap;
+        text-align: center;
+        margin: auto;
     }
 
     .courseContent .videoInfo input {
         background-color: transparent;
         border: 0;
-        font-size: 2rem;
+        font-size: 1.7rem;
         font-weight: bold;
         color: white;
-        max-width: 60vw;
+        margin: auto;
+        text-align: center;
+        width: 100%;
     }
 
     .courseContent .videoInfo textarea {
         background-color: transparent;
         border: 2px solid white;
         font-size: 1.2em;
-        padding: 15px;
         resize: none;
         width: 100%;
-        max-width: 50vw;
         min-height: 150px;
         height: fit-content;
         color: white;
+        margin: auto;
+        padding: 5px;
+    }
+    .courseContent .videoInfo p{
+        text-align: center;
+        width: 100%;
     }
 
     .courseContent .courseList {
@@ -106,11 +123,13 @@
         display: flex;
         width: 100%;
         margin: 5px auto;
-        justify-content: center;
+        justify-content: space-around;
     }
 
     .courseContent .videoGroup .videoCheckbox {
         margin: auto;
+        width: 15px;
+        height: 15px;
         transform: scale(1.5);
     }
 
@@ -143,21 +162,38 @@
     .courseContent .courseVideo {
         background-color: #02542D;
         border-radius: .2em;
-        padding: 2px;
         margin: 5px 0;
-        width: 90%;
+        padding: 13px;
+        width: 70%;
         display: flex;
-        justify-content: space-between;
-        padding: 11px;
-        margin: auto;
+        flex-wrap: wrap;
+        justify-content: space-between; 
         color: white;
     }
+
     .courseContent .new {
         width: 100% !important;
     }
-
     .courseContent .courseVideo div {
-        margin: auto 0;
+        margin: 5px 0;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .courseContent .courseVideo input {
+        margin: 5px 0;
+        width: 100%;
+    }
+    .courseContent .courseVideo .buttonOptions {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+    .courseContent .courseVideo .buttonOptions button{
+        width: 48%;
+        font-size: 1em;
+        margin: auto;
     }
 
     .courseContent .courseVideo:hover {
@@ -180,6 +216,7 @@
     .courseContent .courseVideo p {
         margin: 1em;
         color: white;
+        text-align: center;
     }
 
     .courseContent .btDelete {

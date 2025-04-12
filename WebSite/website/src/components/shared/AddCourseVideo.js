@@ -61,19 +61,17 @@ function AddCourseVideo({ user, courseId, showAddVideo, setShowAddVideo, videoLi
     return (
         <div key="videoNew" className="videoGroup new" id="groupNew">
             <div className="courseVideo vid new" id="vid new">
-                <div className="videoContent">
-                    <div className="txtVideoName">
-                        <label>Video Name: </label>
-                        <input type="text" name="videoTitle" value={videoValues.videoTitle} onChange={(e)=>{handleChange(e,updateVideoValues)}} />
-                    </div>
-                    <div>
-                        <label>Video URL: </label>
-                        <input type="text" name="videoUrl" value={videoValues.videoUrl} onChange={(e)=>{handleChange(e,updateVideoValues)}} />
-                    </div>
-                    <div>
-                        <button onClick={async () => { handleAddClick(AddVideo, videoValues, showAddVideo, emptyVideoValues, videoList, updateVideoList,setShowAddVideo, updateVideoValues, setWatchedVidList) }}>Add</button>
-                        <button onClick={() => setShowAddVideo(!showAddVideo)}>Cancel</button>
-                    </div>
+                <div className="txtVideoName">
+                    <label>Video Name: </label>
+                    <input type="text" name="videoTitle" value={videoValues.videoTitle} onChange={(e) => { handleChange(e, updateVideoValues) }} />
+                </div>
+                <div className="txtVideoUrl">
+                    <label>Video URL: </label>
+                    <input type="text" name="videoUrl" value={videoValues.videoUrl} onChange={(e) => { handleChange(e, updateVideoValues) }} />
+                </div>
+                <div className="buttonOptions">
+                    <button onClick={async () => { handleAddClick(AddVideo, videoValues, showAddVideo, emptyVideoValues, videoList, updateVideoList, setShowAddVideo, updateVideoValues, setWatchedVidList) }}>Add</button>
+                    <button onClick={() => setShowAddVideo(!showAddVideo)}>Cancel</button>
                 </div>
             </div>
         </div>

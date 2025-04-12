@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import "./CoursePage.css";
+import "./CourseMobilePage.css";
 
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
@@ -62,7 +63,7 @@ function HeaderStudent({ img64, targetCourse }) {
       <div className="img-content">
         <img src={`data:image/jpeg;base64,${img64}`} alt="courseImage" />
       </div>
-      <div >
+      <div className="videoInfo">
         <h2>{targetCourse.title}</h2>
         <p>Author: <a href="https://www.linkedin.com/in/gustavorbpereira/">Gustavo Pereira</a></p>
         <p>{targetCourse.description}</p>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 
 import "./LoginPage.css";
+import "./LoginMobilePage.css";
 
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
