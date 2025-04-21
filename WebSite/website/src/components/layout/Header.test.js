@@ -39,17 +39,19 @@ describe('Header', () => {
         expect(screen.getByText(/Sign Up/i)).toBeInTheDocument();
     });
 
-    test('renders name(Gus) and logoff when user is logged', () => {
-        UserManager.getLocalUser.mockReturnValue({ firstName: 'Gus' });
+    test('renders name and logoff when user is logged', () => {
+        const testName = "test";
+        UserManager.getLocalUser.mockReturnValue({ firstName: testName });
 
         render(<Header />, { wrapper: MemoryRouter });
 
-        expect(screen.getByText(/Gus/i)).toBeInTheDocument();
+        expect(screen.getByText(testName)).toBeInTheDocument();
         expect(screen.getByText(/LogOff/i)).toBeInTheDocument();
     });
 
     test('when clicking logoff, clears user cache and redirects to /Home', () => {
-        UserManager.getLocalUser.mockReturnValue({ firstName: 'Gus' });
+        const alertSpy = jest.spyOn(window, "alert").mockImplementation(() => {});
+        UserManager.getLocalUser.mockReturnValue({ firstName: 'test' });
 
         render(<Header />, { wrapper: MemoryRouter });
 
@@ -58,6 +60,8 @@ describe('Header', () => {
 
         expect(UserManager.setLocalUser).toHaveBeenCalledWith(null);
         expect(mockNavigate).toHaveBeenCalledWith('/Home');
+
+        alertSpy.mockRestore();
     });
 
     test('clicking the icon redirects to /Home', () => {
