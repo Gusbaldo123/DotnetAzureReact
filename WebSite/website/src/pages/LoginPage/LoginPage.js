@@ -69,7 +69,7 @@ function LogInForm({ navigate, setLoginPage }) {
         </div>
         <button type="submit">LogIn</button>
         <Link className="btForgot" to={{ pathname: "/Recover" }}>Forgot your password?</Link>
-        <Link className="btSignUp" onClick={() => { setLoginPage(false); }}>Don't have an account?</Link>
+        <Link className="btSignUp" to={{ pathname: "" }} onClick={(e) => { e.preventDefault();setLoginPage(false); }}>Don't have an account?</Link>
       </form>
     </>
   );
@@ -105,7 +105,7 @@ function SignUpForm({ setLoginPage }) {
         </div>
         <button type="submit">Register</button>
         <Link className="btForgot" to={{ pathname: "/Recover" }}>Forgot your password?</Link>
-        <Link className="btSignIn" onClick={() => { setLoginPage(true); }}>Already have an account?</Link>
+        <Link className="btSignIn" to={{ pathname: "" }} onClick={(e) => { e.preventDefault();setLoginPage(true); }}>Already have an account?</Link>
       </form>
     </>
   );
